@@ -30,6 +30,13 @@ func NewUserService(userRepo repository.UserRepository, roleRepo repository.Role
 }
 
 func (s *userService) RegisterUser(user *domain.User) error {
+	userEmail, err := s.userRepository.FindByEmail(user.Email)
+	if err != nil {
+		return err
+	}
+	if userEmail != nil {
+		return errors.New("email already registered")
+	}
 	return s.userRepository.Create(user)
 }
 

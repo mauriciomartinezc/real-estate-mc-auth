@@ -22,7 +22,7 @@ func NewUserHandler(e *echo.Group, userService service.UserService) {
 	groupRoute.POST("/login", handler.Login)
 
 	groupRoute.Use(middleware.JWTAuth)
-	groupRoute.GET("/me", handler.Me)
+	groupRoute.GET("/profile", handler.Profile)
 }
 
 func (h *UserHandler) Register(c echo.Context) error {
@@ -31,7 +31,7 @@ func (h *UserHandler) Register(c echo.Context) error {
 		return utils.SendBadRequest(c, "Invalid request payload")
 	}
 	if err := h.userService.RegisterUser(user); err != nil {
-		return utils.SendInternalServerError(c, err.Error())
+		return utils.SendBadRequest(c, err.Error())
 	}
 	user.Password = ""
 	return utils.SendCreated(c, "User registered successfully", user)
@@ -55,7 +55,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 	return utils.SendSuccess(c, "Login successful", loginResponse)
 }
 
-func (h *UserHandler) Me(c echo.Context) error {
+func (h *UserHandler) Profile(c echo.Context) error {
 	user, err := h.userService.GetMe(c)
 	if err != nil {
 		return utils.SendBadRequest(c, err.Error())
