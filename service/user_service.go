@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 )
@@ -30,12 +31,12 @@ func NewUserService(userRepo repository.UserRepository, roleRepo repository.Role
 }
 
 func (s *userService) RegisterUser(user *domain.User) error {
-	userEmail, err := s.userRepository.FindByEmail(user.Email)
+	userEmail, err := s.userRepository.FindByEmail(user.Email, false)
 	if err != nil {
 		return err
 	}
 	if userEmail != nil {
-		return errors.New("email already registered")
+		return errors.New(locales.EmailAlreadyRegistered)
 	}
 	return s.userRepository.Create(user)
 }
@@ -48,13 +49,13 @@ func (s *userService) Login(email string, password string) (*domain.User, string
 
 	validatePassword := s.userRepository.CheckPasswordHash(password, user.Password)
 	if !validatePassword {
-		return &domain.User{}, "", errors.New("invalid email or password")
+		return &domain.User{}, "", errors.New(locales.InvalidEmailOrPassword)
 	}
 
 	token, err := utils.GenerateToken(user)
 
 	if err != nil {
-		return &domain.User{}, "", errors.New("could not generate token")
+		return &domain.User{}, "", errors.New(locales.CouldNotGenerateToken)
 	}
 
 	user.Password = ""
@@ -65,8 +66,8 @@ func (s *userService) Login(email string, password string) (*domain.User, string
 func (s *userService) GetMe(c echo.Context) (*domain.User, error) {
 	userId, ok := c.Get("userId").(uuid.UUID)
 	if !ok {
-		return &domain.User{}, errors.New("could not get user id")
+		return &domain.User{}, errors.New(locales.CouldNotGetUserId)
 	}
 
-	return s.userRepository.Find(userId)
+	return s.userRepository.Find(userId, "Roles.Permissions")
 }

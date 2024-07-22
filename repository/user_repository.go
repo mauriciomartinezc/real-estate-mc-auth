@@ -9,10 +9,10 @@ import (
 
 type UserRepository interface {
 	Create(user *domain.User) error
-	FindByEmail(email string) (*domain.User, error)
+	FindByEmail(email string, opts ...bool) (*domain.User, error)
 	HashPassword(password string) (string, error)
 	CheckPasswordHash(password, hash string) bool
-	Find(uuid uuid.UUID) (*domain.User, error)
+	Find(uuid uuid.UUID, preload string) (*domain.User, error)
 }
 
 type userRepository struct {
@@ -48,18 +48,27 @@ func (r *userRepository) Create(user *domain.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *userRepository) FindByEmail(email string) (*domain.User, error) {
+func (r *userRepository) FindByEmail(email string, opts ...bool) (*domain.User, error) {
+	requiredError := false
+	if len(opts) > 0 {
+		requiredError = opts[0]
+	}
+
 	var user domain.User
-	err := r.db.Preload("Roles.Permissions").Where("email = ?", email).First(&user).Error
-	if err != nil {
+	query := r.db.Where("email = ?", email)
+	err := query.First(&user).Error
+	if requiredError && err != nil {
 		return nil, err
+	}
+	if err != nil {
+		return nil, nil
 	}
 	return &user, nil
 }
 
-func (r *userRepository) Find(uuid uuid.UUID) (*domain.User, error) {
+func (r *userRepository) Find(uuid uuid.UUID, preload string) (*domain.User, error) {
 	var user domain.User
-	err := r.db.Preload("Roles.Permissions").Where("id = ?", uuid).First(&user).Error
+	err := r.db.Preload(preload).Where("id = ?", uuid).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

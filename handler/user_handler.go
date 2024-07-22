@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
@@ -28,19 +29,22 @@ func NewUserHandler(e *echo.Group, userService service.UserService) {
 func (h *UserHandler) Register(c echo.Context) error {
 	user := new(domain.User)
 	if err := c.Bind(user); err != nil {
-		return utils.SendBadRequest(c, "Invalid request payload")
+		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
 	if err := h.userService.RegisterUser(user); err != nil {
-		return utils.SendBadRequest(c, err.Error())
+		if err.Error() == locales.EmailAlreadyRegistered {
+			return utils.SendBadRequest(c, err.Error())
+		}
+		return utils.SendInternalServerError(c, err.Error())
 	}
 	user.Password = ""
-	return utils.SendCreated(c, "User registered successfully", user)
+	return utils.SendCreated(c, locales.SuccessCreated, user)
 }
 
 func (h *UserHandler) Login(c echo.Context) error {
 	loginRequest := domain.LoginRequest{}
 	if err := c.Bind(&loginRequest); err != nil {
-		return utils.SendError(c, http.StatusBadRequest, "Invalid email or password", nil)
+		return utils.SendBadRequest(c, locales.InvalidEmailOrPassword)
 	}
 
 	user, token, err := h.userService.Login(loginRequest.Email, loginRequest.Password)
@@ -52,7 +56,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 		Token: token,
 		User:  *user,
 	}
-	return utils.SendSuccess(c, "Login successful", loginResponse)
+	return utils.SendSuccess(c, locales.LoginSuccessful, loginResponse)
 }
 
 func (h *UserHandler) Profile(c echo.Context) error {
@@ -60,5 +64,5 @@ func (h *UserHandler) Profile(c echo.Context) error {
 	if err != nil {
 		return utils.SendBadRequest(c, err.Error())
 	}
-	return utils.SendSuccess(c, "User me successfully", user)
+	return utils.SendSuccess(c, locales.ProfileSuccess, user)
 }

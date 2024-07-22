@@ -1,0 +1,35 @@
+{
+  "SuccessCreated": {
+    "other": "Creado exitosamente"
+  },
+  "ErrorPayload": {
+    "other": "Cuerpo de la solicitud no válida"
+  },
+  "EmailAlreadyRegistered": {
+    "other": "Correo electrónico ya registrado"
+  },
+  "LoginSuccessful": {
+    "other": "Inicio de sesión exitoso"
+  },
+  "InvalidEmailOrPassword": {
+    "other": "Correo electrónico o contraseña no válidos"
+  },
+  "CouldNotGenerateToken": {
+    "other": "No se pudo generar el token"
+  },
+  "CouldNotGetUserId": {
+    "other": "No se pudo obtener la identificación de usuario"
+  },
+  "MissingAuthorizationHeader": {
+    "other": "Falta el encabezado Authorization"
+  },
+  "FormatAuthorizationHeaderError": {
+    "other": "El encabezado de Authorization debe tener el formato 'Bearer {token}'"
+  },
+  "InvalidExpiredJWT": {
+    "other": "JWT no válido o caducado"
+  },
+  "ProfileSuccess": {
+    "other": "Perfil de usuario exitoso"
+  }
+}

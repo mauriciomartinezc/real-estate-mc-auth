@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 )
@@ -23,10 +24,10 @@ func NewPermissionHandler(e *echo.Group, permissionService service.PermissionSer
 func (h *PermissionHandler) CreatePermission(c echo.Context) error {
 	permission := new(domain.Permission)
 	if err := c.Bind(permission); err != nil {
-		return utils.SendBadRequest(c, "Invalid request payload")
+		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
 	if err := h.permissionService.CreatePermission(permission); err != nil {
 		return utils.SendInternalServerError(c, err.Error())
 	}
-	return utils.SendCreated(c, "Permission created successfully", permission)
+	return utils.SendCreated(c, locales.SuccessCreated, permission)
 }

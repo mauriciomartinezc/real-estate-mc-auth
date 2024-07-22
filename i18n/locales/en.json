@@ -1,0 +1,35 @@
+{
+  "SuccessCreated": {
+    "other": "Success created"
+  },
+  "ErrorPayload": {
+    "other": "Invalid request payload"
+  },
+  "EmailAlreadyRegistered": {
+    "other": "Email already registered"
+  },
+  "LoginSuccessful": {
+    "other": "Login successful"
+  },
+  "InvalidEmailOrPassword": {
+    "other": "Invalid email or password"
+  },
+  "CloudNotGenerateToken": {
+    "other": "Cloud not generate token"
+  },
+  "CouldNotGetUserId": {
+    "other": "Could not get User Id"
+  },
+  "MissingAuthorizationHeader": {
+    "other": "Missing Authorization header"
+  },
+  "FormatAuthorizationHeaderError": {
+    "other": "Authorization header must be in the format 'Bearer {token}'"
+  },
+  "InvalidExpiredJWT": {
+    "other": "Invalid or expired JWT"
+  },
+  "ProfileSuccess": {
+    "other": "User profile successfully"
+  }
+}

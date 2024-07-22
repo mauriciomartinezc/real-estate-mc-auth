@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/nicksnyder/go-i18n/v2/i18n"
 	"net/http"
 )
 
@@ -28,14 +29,20 @@ func SendError(c echo.Context, status int, message string, data interface{}) err
 }
 
 func SendSuccess(c echo.Context, message string, data interface{}) error {
+	localize := c.Get("localize").(*i18n.Localizer)
+	message = localize.MustLocalize(&i18n.LocalizeConfig{MessageID: message})
 	return SendResponse(c, http.StatusOK, message, data)
 }
 
 func SendCreated(c echo.Context, message string, data interface{}) error {
+	localize := c.Get("localize").(*i18n.Localizer)
+	message = localize.MustLocalize(&i18n.LocalizeConfig{MessageID: message})
 	return SendResponse(c, http.StatusCreated, message, data)
 }
 
 func SendBadRequest(c echo.Context, message string) error {
+	localize := c.Get("localize").(*i18n.Localizer)
+	message = localize.MustLocalize(&i18n.LocalizeConfig{MessageID: message})
 	return SendError(c, http.StatusBadRequest, message, nil)
 }
 

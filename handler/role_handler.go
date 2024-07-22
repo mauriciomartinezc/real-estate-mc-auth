@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 )
@@ -23,10 +24,10 @@ func NewRoleHandler(e *echo.Group, roleService service.RoleService) {
 func (h *RoleHandler) CreateRole(c echo.Context) error {
 	role := new(domain.Role)
 	if err := c.Bind(role); err != nil {
-		return utils.SendBadRequest(c, "Invalid request payload")
+		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
 	if err := h.roleService.CreateRole(role); err != nil {
 		return utils.SendInternalServerError(c, err.Error())
 	}
-	return utils.SendCreated(c, "Role created successfully", role)
+	return utils.SendCreated(c, locales.SuccessCreated, role)
 }

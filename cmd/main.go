@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/config"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/handler"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	echoSwagger "github.com/swaggo/echo-swagger"
@@ -40,6 +41,8 @@ func main() {
 	permissionService := service.NewPermissionService(permissionRepo)
 
 	e := echo.New()
+
+	e.Use(middleware.LanguageHandler())
 
 	api := e.Group("/api")
 
