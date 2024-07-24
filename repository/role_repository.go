@@ -7,7 +7,7 @@ import (
 
 type RoleRepository interface {
 	Create(role *domain.Role) error
-	// Otros métodos necesarios
+	FindBySlug(slug string) (*domain.Role, error)
 }
 
 type roleRepository struct {
@@ -20,4 +20,10 @@ func NewRoleRepository(db *gorm.DB) RoleRepository {
 
 func (r *roleRepository) Create(role *domain.Role) error {
 	return r.db.Create(role).Error
+}
+
+func (r *roleRepository) FindBySlug(slug string) (*domain.Role, error) {
+	var role domain.Role
+	err := r.db.Where("slug = ?", slug).First(&role).Error
+	return &role, err
 }

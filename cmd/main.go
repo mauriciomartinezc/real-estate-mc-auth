@@ -7,11 +7,13 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/handler"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/roles"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/users"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"log"
 	"os"
 )
@@ -24,7 +26,17 @@ func main() {
 
 	dsn := config.GetDSN()
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	newLogger := logger.New(
+		log.New(os.Stdout, "\r\n", log.LstdFlags),
+		logger.Config{
+			LogLevel: logger.Error,
+			Colorful: true,
+		},
+	)
+
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: newLogger,
+	})
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
@@ -34,7 +46,8 @@ func main() {
 		log.Fatalf("failed to auto migrate models: %v", err)
 	}
 
-	users.CreateUserSeeds(db, 15)
+	roles.SyncRolesSeeds(db)
+	users.CreateUserSeeds(db, 0)
 
 	userRepo := repository.NewUserRepository(db)
 	roleRepo := repository.NewRoleRepository(db)
