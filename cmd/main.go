@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/config"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/handler"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/roles"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/users"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-common/config"
+	"github.com/mauriciomartinezc/real-estate-mc-common/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"

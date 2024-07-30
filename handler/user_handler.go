@@ -3,10 +3,11 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
+	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
+	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
+	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 	"net/http"
 )
 
@@ -32,7 +33,7 @@ func (h *UserHandler) Register(c echo.Context) error {
 		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
 	if err := h.userService.RegisterUser(user); err != nil {
-		if err.Error() == locales.EmailAlreadyRegistered {
+		if err.Error() == localesAuth.EmailAlreadyRegistered {
 			return utils.SendBadRequest(c, err.Error())
 		}
 		return utils.SendInternalServerError(c, err.Error())
@@ -44,7 +45,7 @@ func (h *UserHandler) Register(c echo.Context) error {
 func (h *UserHandler) Login(c echo.Context) error {
 	loginRequest := domain.LoginRequest{}
 	if err := c.Bind(&loginRequest); err != nil {
-		return utils.SendBadRequest(c, locales.InvalidEmailOrPassword)
+		return utils.SendBadRequest(c, localesAuth.InvalidEmailOrPassword)
 	}
 
 	user, token, err := h.userService.Login(loginRequest.Email, loginRequest.Password)
@@ -56,7 +57,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 		Token: token,
 		User:  *user,
 	}
-	return utils.SendSuccess(c, locales.LoginSuccessful, loginResponse)
+	return utils.SendSuccess(c, localesAuth.LoginSuccessful, loginResponse)
 }
 
 func (h *UserHandler) Profile(c echo.Context) error {
@@ -64,5 +65,5 @@ func (h *UserHandler) Profile(c echo.Context) error {
 	if err != nil {
 		return utils.SendBadRequest(c, err.Error())
 	}
-	return utils.SendSuccess(c, locales.ProfileSuccess, user)
+	return utils.SendSuccess(c, localesAuth.ProfileSuccess, user)
 }

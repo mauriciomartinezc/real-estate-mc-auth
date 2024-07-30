@@ -7,7 +7,7 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
+	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 )
 
 type UserService interface {
@@ -52,7 +52,7 @@ func (s *userService) Login(email string, password string) (*domain.User, string
 		return &domain.User{}, "", errors.New(locales.InvalidEmailOrPassword)
 	}
 
-	token, err := utils.GenerateToken(user)
+	token, err := utilsAuth.GenerateToken(user)
 
 	if err != nil {
 		return &domain.User{}, "", errors.New(locales.CouldNotGenerateToken)

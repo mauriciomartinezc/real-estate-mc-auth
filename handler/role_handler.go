@@ -3,9 +3,9 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/utils"
+	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
+	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type RoleHandler struct {

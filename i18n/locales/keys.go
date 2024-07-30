@@ -1,8 +1,6 @@
 package locales
 
 const (
-	SuccessCreated                 = "SuccessCreated"
-	ErrorPayload                   = "ErrorPayload"
 	EmailAlreadyRegistered         = "EmailAlreadyRegistered"
 	LoginSuccessful                = "LoginSuccessful"
 	InvalidEmailOrPassword         = "InvalidEmailOrPassword"
