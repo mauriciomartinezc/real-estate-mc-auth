@@ -45,7 +45,17 @@ func (r *userRepository) Create(user *domain.User) error {
 
 	user.Password = hashedPassword
 
+	if len(user.Roles) == 0 {
+		dataRole := domain.ROLES["USER"]
+		role := new(domain.Role)
+		role.ID = dataRole.ID
+		role.Name = dataRole.Name
+		role.Slug = dataRole.Slug
+		user.Roles = []domain.Role{*role}
+	}
+
 	return r.db.Create(user).Error
+	//return errors.New("error feo")
 }
 
 func (r *userRepository) FindByEmail(email string, opts ...bool) (*domain.User, error) {

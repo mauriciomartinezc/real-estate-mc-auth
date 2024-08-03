@@ -42,7 +42,10 @@ func (s *userService) RegisterUser(user *domain.User) error {
 }
 
 func (s *userService) Login(email string, password string) (*domain.User, string, error) {
-	user, err := s.userRepository.FindByEmail(email)
+	user, err := s.userRepository.FindByEmail(email, false)
+	if user == nil {
+		return nil, "", errors.New(locales.InvalidEmailOrPassword)
+	}
 	if err != nil {
 		return nil, "", err
 	}

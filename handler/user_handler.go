@@ -8,7 +8,6 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
-	"net/http"
 )
 
 type UserHandler struct {
@@ -50,7 +49,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 
 	user, token, err := h.userService.Login(loginRequest.Email, loginRequest.Password)
 	if err != nil {
-		return utils.SendError(c, http.StatusBadRequest, err.Error(), nil)
+		return utils.SendBadRequest(c, err.Error())
 	}
 
 	loginResponse := domain.LoginResponse{

@@ -52,8 +52,10 @@ github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovk
 github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/yFXSvRLM=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
-github.com/mauriciomartinezc/real-estate-mc-common v0.0.0-20240730000519-09c1c43f3461 h1:UZ//2qn+4R6Yitxiv6Lcg/zc042tRa/vdGADrjXhSb8=
-github.com/mauriciomartinezc/real-estate-mc-common v0.0.0-20240730000519-09c1c43f3461/go.mod h1:YiJOYSYTl9sTm3ruRZ555CDWBh8AWPm5ewyuG3ZPN4o=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.0-20240730013136-d9b2226c2a8f h1:w/ojZN8ZXTHzcgviq+kyoE4GvQiJEWk7CjzOtPngU5E=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.0-20240730013136-d9b2226c2a8f/go.mod h1:YiJOYSYTl9sTm3ruRZ555CDWBh8AWPm5ewyuG3ZPN4o=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.1 h1:rde8vLKe/YgupqZ060V4FtoEes4nHx4LhElY7i6VqFE=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.1/go.mod h1:YiJOYSYTl9sTm3ruRZ555CDWBh8AWPm5ewyuG3ZPN4o=
 github.com/nicksnyder/go-i18n/v2 v2.4.0 h1:3IcvPOAvnCKwNm0TB0dLDTuawWEj+ax/RERNC+diLMM=
 github.com/nicksnyder/go-i18n/v2 v2.4.0/go.mod h1:nxYSZE9M0bf3Y70gPQjN9ha7XNHX7gMc814+6wVyEI4=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
@@ -69,6 +71,8 @@ github.com/swaggo/echo-swagger v1.4.1 h1:Yf0uPaJWp1uRtDloZALyLnvdBeoEL5Kc7DtnjzO
 github.com/swaggo/echo-swagger v1.4.1/go.mod h1:C8bSi+9yH2FLZsnhqMZLIZddpUxZdBYuNHbtaS1Hljc=
 github.com/swaggo/files/v2 v2.0.0 h1:hmAt8Dkynw7Ssz46F6pn8ok6YmGZqHSVLZ+HQM7i0kw=
 github.com/swaggo/files/v2 v2.0.0/go.mod h1:24kk2Y9NYEJ5lHuCra6iVwkMjIekMCaFq/0JQj66kyM=
+github.com/swaggo/files/v2 v2.0.1 h1:XCVJO/i/VosCDsJu1YLpdejGsGnBE9deRMpjN4pJLHk=
+github.com/swaggo/files/v2 v2.0.1/go.mod h1:24kk2Y9NYEJ5lHuCra6iVwkMjIekMCaFq/0JQj66kyM=
 github.com/swaggo/swag v1.16.3 h1:PnCYjPCah8FK4I26l2F/KQ4yz3sILcVUN3cTlBFA9Pg=
 github.com/swaggo/swag v1.16.3/go.mod h1:DImHIuOFXKpMFAQjcC7FG4m3Dg4+QuUgUzJmKjI/gRk=
 github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6KllzawFIhcdPw=
