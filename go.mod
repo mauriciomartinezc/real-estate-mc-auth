@@ -3,7 +3,7 @@ module github.com/mauriciomartinezc/real-estate-mc-auth
 go 1.22
 
 require (
-	github.com/bxcodec/faker/v3 v3.8.1
+	github.com/bxcodec/faker/v4 v4.0.0-beta.3
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.12.0

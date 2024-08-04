@@ -2,7 +2,7 @@ package users
 
 import (
 	"fmt"
-	"github.com/bxcodec/faker/v3"
+	"github.com/bxcodec/faker/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
 	"gorm.io/gorm"
