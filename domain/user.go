@@ -7,11 +7,12 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
-	Name      string    `json:"name" gorm:"not null"`
-	Email     string    `json:"email" gorm:"unique;index;not null"`
-	Password  string    `json:"password" gorm:"not null"`
-	Roles     []Role    `gorm:"many2many:user_roles;"`
+	ID        uuid.UUID `json:"id,omitempty" gorm:"type:uuid;primaryKey"`
+	Email     string    `json:"email,omitempty" gorm:"unique;index;not null"`
+	Password  string    `json:"password,omitempty" gorm:"not null"`
+	ProfileId uuid.UUID `json:"profile_id,omitempty" gorm:"type:uuid;default:null"`
+	Profile   Profile   `json:"profile" gorm:"foreign:ProfileId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	Roles     []Role    `json:"roles,omitempty" gorm:"many2many:user_roles;"`
 	CreatedAt int64
 	UpdatedAt int64
 }

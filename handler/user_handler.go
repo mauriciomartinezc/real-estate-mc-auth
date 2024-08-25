@@ -4,7 +4,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
@@ -21,9 +20,6 @@ func NewUserHandler(e *echo.Group, userService service.UserService) {
 	groupRoute := e.Group("/auth")
 	groupRoute.POST("/register", handler.Register)
 	groupRoute.POST("/login", handler.Login)
-
-	groupRoute.Use(middleware.JWTAuth)
-	groupRoute.GET("/profile", handler.Profile)
 }
 
 func (h *UserHandler) Register(c echo.Context) error {
@@ -57,12 +53,4 @@ func (h *UserHandler) Login(c echo.Context) error {
 		User:  *user,
 	}
 	return utils.SendSuccess(c, localesAuth.LoginSuccessful, loginResponse)
-}
-
-func (h *UserHandler) Profile(c echo.Context) error {
-	user, err := h.userService.GetMe(c)
-	if err != nil {
-		return utils.SendBadRequest(c, err.Error())
-	}
-	return utils.SendSuccess(c, localesAuth.ProfileSuccess, user)
 }

@@ -12,20 +12,25 @@ import (
 
 func CreateUserSeeds(db *gorm.DB, count int) {
 	userRepo := repository.NewUserRepository(db)
-	createDefaultUser(db, userRepo)
-	generateUsers(userRepo, db, count)
+	profileRepo := repository.NewProfileRepository(db)
+	createDefaultUser(db, userRepo, profileRepo)
+	generateUsers(userRepo, profileRepo, db, count)
 }
 
-func createDefaultUser(db *gorm.DB, userRepository repository.UserRepository) {
+func createDefaultUser(db *gorm.DB, userRepository repository.UserRepository, profileRepository repository.ProfileRepository) {
 	userAdmin, _ := userRepository.FindByEmail("super.admin@realestate.com", false)
 	if userAdmin == nil {
 		roleAdmin := new(domain.Role)
 		roleAdmin.ID = domain.ROLES["SUPER_ADMIN"].ID
+		profile := &domain.Profile{
+			FirstName: "Super Admin",
+		}
+		profile, _ = profileRepository.Create(profile)
 		user := &domain.User{
-			Name:     "Super Admin",
-			Email:    "super.admin@realestate.com",
-			Password: "eg9k'_VBnY~VG3ibgnTqn3",
-			Roles:    []domain.Role{*roleAdmin},
+			Email:     "super.admin@realestate.com",
+			Password:  "eg9k'_VBnY~VG3ibgnTqn3",
+			Roles:     []domain.Role{*roleAdmin},
+			ProfileId: profile.ID,
 		}
 		err := userRepository.Create(user)
 		if err != nil {
@@ -35,19 +40,23 @@ func createDefaultUser(db *gorm.DB, userRepository repository.UserRepository) {
 	}
 }
 
-func generateUsers(userRepository repository.UserRepository, db *gorm.DB, count int) {
+func generateUsers(userRepository repository.UserRepository, profileRepository repository.ProfileRepository, db *gorm.DB, count int) {
 	for i := 0; i < count; i++ {
 		roleData := getRandomRole()
 		role := new(domain.Role)
 		role.ID = roleData.ID
-		name := generateFullName()
+		firstName, lastName := generateFullName()
 		email := generateEmail()
-		fmt.Println(name)
+		profile := &domain.Profile{
+			FirstName: firstName,
+			LastName:  lastName,
+		}
+		profile, _ = profileRepository.Create(profile)
 		user := &domain.User{
-			Name:     name,
-			Email:    email,
-			Password: "Password",
-			Roles:    []domain.Role{*role},
+			Email:     email,
+			Password:  "Password",
+			Roles:     []domain.Role{*role},
+			ProfileId: profile.ID,
 		}
 		err := userRepository.Create(user)
 		if err != nil {
@@ -56,10 +65,10 @@ func generateUsers(userRepository repository.UserRepository, db *gorm.DB, count 
 	}
 }
 
-func generateFullName() string {
+func generateFullName() (string, string) {
 	firstName := faker.FirstName()
 	lastName := faker.LastName()
-	return firstName + " " + lastName
+	return firstName, lastName
 }
 
 func generateEmail() string {
@@ -73,6 +82,5 @@ func getRandomRole() domain.Role {
 		keys = append(keys, k)
 	}
 	randomKey := keys[rand.Intn(len(keys))]
-	fmt.Println(randomKey)
 	return domain.ROLES[randomKey]
 }

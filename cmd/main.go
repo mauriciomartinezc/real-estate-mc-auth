@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/handler"
@@ -19,13 +20,24 @@ import (
 )
 
 func main() {
-	err := config.LoadEnv()
-	if err != nil {
-		log.Fatal(err)
+	if err := run(); err != nil {
+		log.Fatalf("application failed: %v", err)
+	}
+}
+
+func run() error {
+	if err := config.LoadEnv(); err != nil {
+		return fmt.Errorf("failed to load environment: %w", err)
 	}
 
-	dsn := config.GetDSN()
+	if err := config.ValidateEnvironments(); err != nil {
+		return fmt.Errorf("invalid environment configuration: %w", err)
+	}
 
+	dsn, err := config.GetDSN()
+	if err != nil {
+		return fmt.Errorf("failed to get DSN: %w", err)
+	}
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags),
 		logger.Config{
@@ -34,21 +46,20 @@ func main() {
 		},
 	)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
-		Logger: newLogger,
-	})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{Logger: newLogger})
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	err = db.AutoMigrate(&domain.User{}, &domain.Role{}, &domain.Permission{})
-	if err != nil {
-		log.Fatalf("failed to auto migrate models: %v", err)
+	if err := db.AutoMigrate(&domain.Profile{}, &domain.User{}, &domain.Role{}, &domain.Permission{}); err != nil {
+		return fmt.Errorf("failed to auto migrate models: %w", err)
 	}
 
+	// Seeds
 	roles.SyncRolesSeeds(db)
 	users.CreateUserSeeds(db, 0)
 
+	// Repositories and Services
 	userRepo := repository.NewUserRepository(db)
 	roleRepo := repository.NewRoleRepository(db)
 	permissionRepo := repository.NewPermissionRepository(db)
@@ -58,17 +69,14 @@ func main() {
 	permissionService := service.NewPermissionService(permissionRepo)
 
 	e := echo.New()
-
 	e.Use(middleware.LanguageHandler())
 
 	api := e.Group("/api")
-
 	handler.NewUserHandler(api, userService)
 	handler.NewRoleHandler(api, roleService)
 	handler.NewPermissionHandler(api, permissionService)
 
-	// swagger documentation
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
-	log.Fatal(e.Start(":" + os.Getenv("SERVER_PORT")))
+	return e.Start(":" + os.Getenv("SERVER_PORT"))
 }

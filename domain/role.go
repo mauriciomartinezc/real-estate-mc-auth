@@ -5,10 +5,10 @@ import (
 )
 
 type Role struct {
-	ID          uuid.UUID    `gorm:"type:uuid;primaryKey"`
-	Name        string       `json:"name" gorm:"unique;index;not null"`
-	Slug        string       `json:"slug" gorm:"unique;index;not null"`
-	Permissions []Permission `gorm:"many2many:role_permissions;"`
+	ID          uuid.UUID    `json:"id,omitempty" gorm:"type:uuid;primaryKey"`
+	Name        string       `json:"name,omitempty" gorm:"unique;index;not null"`
+	Slug        string       `json:"slug,omitempty" gorm:"unique;index;not null"`
+	Permissions []Permission `json:"permissions,omitempty" gorm:"many2many:role_permissions;"`
 }
 
 var ROLES = map[string]Role{

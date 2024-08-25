@@ -2,8 +2,6 @@ package service
 
 import (
 	"errors"
-	"github.com/google/uuid"
-	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
@@ -13,7 +11,6 @@ import (
 type UserService interface {
 	RegisterUser(user *domain.User) error
 	Login(email string, password string) (*domain.User, string, error)
-	GetMe(e echo.Context) (*domain.User, error)
 }
 
 type userService struct {
@@ -64,13 +61,4 @@ func (s *userService) Login(email string, password string) (*domain.User, string
 	user.Password = ""
 
 	return user, token, nil
-}
-
-func (s *userService) GetMe(c echo.Context) (*domain.User, error) {
-	userId, ok := c.Get("userId").(uuid.UUID)
-	if !ok {
-		return &domain.User{}, errors.New(locales.CouldNotGetUserId)
-	}
-
-	return s.userRepository.Find(userId, "Roles.Permissions")
 }

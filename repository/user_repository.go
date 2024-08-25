@@ -3,6 +3,7 @@ package repository
 import (
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -54,8 +55,16 @@ func (r *userRepository) Create(user *domain.User) error {
 		user.Roles = []domain.Role{*role}
 	}
 
+	if !utils.IsValidUUID(user.ProfileId.String()) {
+		profileRepository := NewProfileRepository(r.db)
+		profile, err := profileRepository.Create(new(domain.Profile))
+		if err != nil {
+			return err
+		}
+		user.ProfileId = profile.ID
+	}
+
 	return r.db.Create(user).Error
-	//return errors.New("error feo")
 }
 
 func (r *userRepository) FindByEmail(email string, opts ...bool) (*domain.User, error) {
