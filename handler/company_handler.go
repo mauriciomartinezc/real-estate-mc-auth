@@ -61,7 +61,8 @@ func (h *CompanyHandler) UpdateCompany(c echo.Context) error {
 		return utils.SendBadRequest(c, locales.InvalidUuid)
 	}
 
-	company := new(domain.Company)
+	company, err := h.companyService.FindById(companyUuid)
+
 	if err := c.Bind(company); err != nil {
 		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
@@ -70,7 +71,7 @@ func (h *CompanyHandler) UpdateCompany(c echo.Context) error {
 		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
 	}
 
-	err := h.companyService.Update(company)
+	err = h.companyService.Update(company)
 	if err != nil {
 		return utils.SendInternalServerError(c, err.Error())
 	}

@@ -10,7 +10,7 @@ require (
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/uuid v1.6.0
 	github.com/labstack/echo/v4 v4.12.0
-	github.com/mauriciomartinezc/real-estate-mc-common v0.0.6
+	github.com/mauriciomartinezc/real-estate-mc-common v0.0.8
 	github.com/stretchr/testify v1.9.0
 	github.com/swaggo/echo-swagger v1.4.1
 	github.com/swaggo/swag v1.16.3
@@ -19,7 +19,7 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-replace github.com/mauriciomartinezc/real-estate-mc-common => ../common_mc
+//replace github.com/mauriciomartinezc/real-estate-mc-common => ../common_mc
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

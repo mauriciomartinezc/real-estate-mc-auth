@@ -5,6 +5,9 @@
   "ErrorPayload": {
     "other": "Cuerpo de la solicitud no válida"
   },
+  "SuccessResponse": {
+    "other": "Respuesta de éxito"
+  },
   "EmailAlreadyRegistered": {
     "other": "Correo electrónico ya registrado"
   },

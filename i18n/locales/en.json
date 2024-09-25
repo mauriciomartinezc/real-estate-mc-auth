@@ -5,6 +5,9 @@
   "ErrorPayload": {
     "other": "Invalid request payload"
   },
+  "SuccessResponse": {
+    "other": "Success response"
+  },
   "EmailAlreadyRegistered": {
     "other": "Email already registered"
   },

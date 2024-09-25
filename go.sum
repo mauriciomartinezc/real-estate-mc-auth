@@ -64,6 +64,9 @@ github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovk
 github.com/mattn/go-isatty v0.0.16/go.mod h1:kYGgaQfpe5nmfYZH+SKPsOc2e4SrIfOl2e/yFXSvRLM=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.6/go.mod h1:O3Vun/HKq1oHSifDiVuOTSxQaGu/FWnXczUXFmQdfQE=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.8 h1:SsPrRaBRJj1FRuWlOB5//dtpdDCzGKjKap2eV6SbutQ=
+github.com/mauriciomartinezc/real-estate-mc-common v0.0.8/go.mod h1:O3Vun/HKq1oHSifDiVuOTSxQaGu/FWnXczUXFmQdfQE=
 github.com/nicksnyder/go-i18n/v2 v2.4.0 h1:3IcvPOAvnCKwNm0TB0dLDTuawWEj+ax/RERNC+diLMM=
 github.com/nicksnyder/go-i18n/v2 v2.4.0/go.mod h1:nxYSZE9M0bf3Y70gPQjN9ha7XNHX7gMc814+6wVyEI4=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
