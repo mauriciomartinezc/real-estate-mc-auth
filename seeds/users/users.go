@@ -13,11 +13,11 @@ import (
 func CreateUserSeeds(db *gorm.DB, count int) {
 	userRepo := repository.NewUserRepository(db)
 	profileRepo := repository.NewProfileRepository(db)
-	createDefaultUser(db, userRepo, profileRepo)
-	generateUsers(userRepo, profileRepo, db, count)
+	createDefaultUser(userRepo, profileRepo)
+	generateUsers(userRepo, profileRepo, count)
 }
 
-func createDefaultUser(db *gorm.DB, userRepository repository.UserRepository, profileRepository repository.ProfileRepository) {
+func createDefaultUser(userRepository repository.UserRepository, profileRepository repository.ProfileRepository) {
 	userAdmin, _ := userRepository.FindByEmail("super.admin@realestate.com", false)
 	if userAdmin == nil {
 		roleAdmin := new(domain.Role)
@@ -39,7 +39,7 @@ func createDefaultUser(db *gorm.DB, userRepository repository.UserRepository, pr
 	}
 }
 
-func generateUsers(userRepository repository.UserRepository, profileRepository repository.ProfileRepository, db *gorm.DB, count int) {
+func generateUsers(userRepository repository.UserRepository, profileRepository repository.ProfileRepository, count int) {
 	for i := 0; i < count; i++ {
 		roleData := getRandomRole()
 		role := new(domain.Role)

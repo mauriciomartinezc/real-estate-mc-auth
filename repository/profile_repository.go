@@ -20,7 +20,7 @@ func NewProfileRepository(db *gorm.DB) ProfileRepository {
 	return &profileRepository{db: db}
 }
 
-func (p profileRepository) Create(user *domain.User, profile *domain.Profile) (*domain.Profile, error) {
+func (p profileRepository) Create(_ *domain.User, profile *domain.Profile) (*domain.Profile, error) {
 	if err := p.db.Preload("City").Create(profile).Error; err != nil {
 		return nil, err
 	}
