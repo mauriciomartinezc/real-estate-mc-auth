@@ -31,5 +31,14 @@
   },
   "ProfileSuccess": {
     "other": "User profile successfully"
+  },
+  "InvalidValueFor": {
+    "other": "Invalid value for field"
+  },
+  "required": {
+    "other": "is required"
+  },
+  "Password": {
+    "other": "Password"
   }
 }

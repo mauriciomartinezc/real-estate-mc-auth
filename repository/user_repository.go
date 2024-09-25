@@ -13,7 +13,8 @@ type UserRepository interface {
 	FindByEmail(email string, opts ...bool) (*domain.User, error)
 	HashPassword(password string) (string, error)
 	CheckPasswordHash(password, hash string) bool
-	Find(uuid uuid.UUID, preload string) (*domain.User, error)
+	Find(uuid uuid.UUID, preload ...string) (*domain.User, error)
+	UpdateProfileId(user *domain.User, profile *domain.Profile) error
 }
 
 type userRepository struct {
@@ -46,22 +47,13 @@ func (r *userRepository) Create(user *domain.User) error {
 
 	user.Password = hashedPassword
 
-	if len(user.Roles) == 0 {
-		dataRole := domain.ROLES["USER"]
-		role := new(domain.Role)
-		role.ID = dataRole.ID
-		role.Name = dataRole.Name
-		role.Slug = dataRole.Slug
-		user.Roles = []domain.Role{*role}
-	}
-
-	if !utils.IsValidUUID(user.ProfileId.String()) {
+	if !utils.IsValidUUID(user.ProfileId) {
 		profileRepository := NewProfileRepository(r.db)
-		profile, err := profileRepository.Create(new(domain.Profile))
+		profile, err := profileRepository.Create(user, new(domain.Profile))
 		if err != nil {
 			return err
 		}
-		user.ProfileId = profile.ID
+		user.ProfileId = profile.ID.String()
 	}
 
 	return r.db.Create(user).Error
@@ -85,12 +77,28 @@ func (r *userRepository) FindByEmail(email string, opts ...bool) (*domain.User, 
 	return &user, nil
 }
 
-func (r *userRepository) Find(uuid uuid.UUID, preload string) (*domain.User, error) {
+func (r *userRepository) Find(uuid uuid.UUID, preloads ...string) (*domain.User, error) {
 	var user domain.User
-	err := r.db.Preload(preload).Where("id = ?", uuid).First(&user).Error
+
+	query := r.db
+	for _, preload := range preloads {
+		if preload != "" {
+			query = query.Preload(preload)
+		}
+	}
+
+	err := query.Where("id = ?", uuid).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
 	user.Password = ""
 	return &user, nil
+}
+
+func (r *userRepository) UpdateProfileId(user *domain.User, profile *domain.Profile) error {
+	err := r.db.Model(user).Update("ProfileId", profile.ID).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -51,7 +51,7 @@ func run() error {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
-	if err := db.AutoMigrate(&domain.Profile{}, &domain.User{}, &domain.Role{}, &domain.Permission{}); err != nil {
+	if err := db.AutoMigrate(&domain.Profile{}, &domain.User{}, &domain.Role{}, &domain.Permission{}, &domain.Company{}, &domain.CompanyUser{}); err != nil {
 		return fmt.Errorf("failed to auto migrate models: %w", err)
 	}
 
@@ -61,20 +61,26 @@ func run() error {
 
 	// Repositories and Services
 	userRepo := repository.NewUserRepository(db)
+	profileRepo := repository.NewProfileRepository(db)
 	roleRepo := repository.NewRoleRepository(db)
 	permissionRepo := repository.NewPermissionRepository(db)
+	companyRepo := repository.NewCompanyRepository(db)
 
-	userService := service.NewUserService(userRepo, roleRepo, permissionRepo)
+	userService := service.NewUserService(userRepo)
+	profileService := service.NewProfileService(profileRepo)
 	roleService := service.NewRoleService(roleRepo)
 	permissionService := service.NewPermissionService(permissionRepo)
+	companyService := service.NewCompanyService(companyRepo)
 
 	e := echo.New()
 	e.Use(middleware.LanguageHandler())
 
 	api := e.Group("/api")
 	handler.NewUserHandler(api, userService)
+	handler.NewProfileHandler(api, profileService, userService)
 	handler.NewRoleHandler(api, roleService)
 	handler.NewPermissionHandler(api, permissionService)
+	handler.NewCompanyHandler(api, companyService)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 

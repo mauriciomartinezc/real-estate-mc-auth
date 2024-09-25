@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
@@ -8,6 +9,12 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
+
+var validate *validator.Validate
+
+func init() {
+	validate = validator.New()
+}
 
 type UserHandler struct {
 	userService service.UserService
@@ -27,6 +34,11 @@ func (h *UserHandler) Register(c echo.Context) error {
 	if err := c.Bind(user); err != nil {
 		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
+
+	if err := validate.Struct(user); err != nil {
+		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
+	}
+
 	if err := h.userService.RegisterUser(user); err != nil {
 		if err.Error() == localesAuth.EmailAlreadyRegistered {
 			return utils.SendBadRequest(c, err.Error())

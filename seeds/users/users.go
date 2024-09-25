@@ -25,13 +25,12 @@ func createDefaultUser(db *gorm.DB, userRepository repository.UserRepository, pr
 		profile := &domain.Profile{
 			FirstName: "Super Admin",
 		}
-		profile, _ = profileRepository.Create(profile)
 		user := &domain.User{
-			Email:     "super.admin@realestate.com",
-			Password:  "eg9k'_VBnY~VG3ibgnTqn3",
-			Roles:     []domain.Role{*roleAdmin},
-			ProfileId: profile.ID,
+			Email:    "super.admin@realestate.com",
+			Password: "eg9k'_VBnY~VG3ibgnTqn3",
 		}
+		profile, _ = profileRepository.Create(user, profile)
+		user.ProfileId = profile.ID.String()
 		err := userRepository.Create(user)
 		if err != nil {
 			fmt.Printf("Error when create default user: %s\n", user.Email)
@@ -51,13 +50,12 @@ func generateUsers(userRepository repository.UserRepository, profileRepository r
 			FirstName: firstName,
 			LastName:  lastName,
 		}
-		profile, _ = profileRepository.Create(profile)
 		user := &domain.User{
-			Email:     email,
-			Password:  "Password",
-			Roles:     []domain.Role{*role},
-			ProfileId: profile.ID,
+			Email:    email,
+			Password: "Password",
 		}
+		profile, _ = profileRepository.Create(user, profile)
+		user.ProfileId = profile.ID.String()
 		err := userRepository.Create(user)
 		if err != nil {
 			return

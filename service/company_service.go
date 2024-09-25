@@ -1,0 +1,38 @@
+package service
+
+import (
+	"github.com/google/uuid"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+)
+
+type CompanyService interface {
+	Create(company *domain.Company, user domain.User) error
+	FindById(id string) (*domain.Company, error)
+	Update(company *domain.Company) error
+	AssociateUserToCompany(company *domain.Company, user domain.User, role domain.Role, userCreator domain.User) error
+}
+
+type companyService struct {
+	companyRepository repository.CompanyRepository
+}
+
+func NewCompanyService(companyRepository repository.CompanyRepository) CompanyService {
+	return &companyService{companyRepository: companyRepository}
+}
+
+func (s *companyService) Create(company *domain.Company, user domain.User) error {
+	return s.companyRepository.Create(company, user)
+}
+
+func (s *companyService) FindById(id string) (*domain.Company, error) {
+	return s.companyRepository.FindByID(uuid.MustParse(id))
+}
+
+func (s *companyService) Update(company *domain.Company) error {
+	return s.companyRepository.Update(company)
+}
+
+func (s *companyService) AssociateUserToCompany(company *domain.Company, user domain.User, role domain.Role, userCreator domain.User) error {
+	return s.companyRepository.AssociateUserToCompany(company, user, role, userCreator)
+}

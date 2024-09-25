@@ -10,4 +10,5 @@ const (
 	FormatAuthorizationHeaderError = "FormatAuthorizationHeaderError"
 	InvalidExpiredJWT              = "InvalidExpiredJWT"
 	ProfileSuccess                 = "ProfileSuccess"
+	InvalidValueFor                = "InvalidValueFor"
 )

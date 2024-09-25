@@ -31,5 +31,35 @@
   },
   "ProfileSuccess": {
     "other": "Perfil de usuario exitoso"
+  },
+  "InvalidValueFor": {
+    "other": "Valor no válido para el campo"
+  },
+  "required": {
+    "other": "es requerido"
+  },
+  "Email": {
+    "other": "Correo electrónico"
+  },
+  "Password": {
+    "other": "Contraseña"
+  },
+  "Name": {
+    "other": "Nombre"
+  },
+  "ContactEmail": {
+    "other": "Correo electrónico de contacto"
+  },
+  "ContactPhone": {
+    "other": "Teléfono de contacto"
+  },
+  "BillingAddress": {
+    "other": "Dirección de facturación"
+  },
+  "TaxID": {
+    "other": "Número de identificación de la empresa"
+  },
+  "CityId": {
+    "other": "Ciudad"
   }
 }

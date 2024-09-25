@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
@@ -11,19 +12,17 @@ import (
 type UserService interface {
 	RegisterUser(user *domain.User) error
 	Login(email string, password string) (*domain.User, string, error)
+	Find(uuid uuid.UUID) (*domain.User, error)
+	UpdateProfileId(user *domain.User, profile *domain.Profile) error
 }
 
 type userService struct {
-	userRepository       repository.UserRepository
-	roleRepository       repository.RoleRepository
-	permissionRepository repository.PermissionRepository
+	userRepository repository.UserRepository
 }
 
-func NewUserService(userRepo repository.UserRepository, roleRepo repository.RoleRepository, permRepo repository.PermissionRepository) UserService {
+func NewUserService(userRepo repository.UserRepository) UserService {
 	return &userService{
-		userRepository:       userRepo,
-		roleRepository:       roleRepo,
-		permissionRepository: permRepo,
+		userRepository: userRepo,
 	}
 }
 
@@ -61,4 +60,16 @@ func (s *userService) Login(email string, password string) (*domain.User, string
 	user.Password = ""
 
 	return user, token, nil
+}
+
+func (s *userService) Find(uuid uuid.UUID) (*domain.User, error) {
+	user, err := s.userRepository.Find(uuid, "Profile")
+	if user == nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (s *userService) UpdateProfileId(user *domain.User, profile *domain.Profile) error {
+	return s.userRepository.UpdateProfileId(user, profile)
 }

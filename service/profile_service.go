@@ -1,16 +1,14 @@
 package service
 
 import (
-	"errors"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
 )
 
 type ProfileService interface {
-	Create(profile *domain.Profile) (*domain.Profile, error)
+	Create(user *domain.User, profile *domain.Profile) (*domain.Profile, error)
 	Update(profile *domain.Profile) (*domain.Profile, error)
 	MeProfile(c echo.Context) (*domain.Profile, error)
 }
@@ -25,8 +23,8 @@ func NewProfileService(profileRepository repository.ProfileRepository) ProfileSe
 	}
 }
 
-func (p *profileService) Create(profile *domain.Profile) (*domain.Profile, error) {
-	return p.profileRepository.Create(profile)
+func (p *profileService) Create(user *domain.User, profile *domain.Profile) (*domain.Profile, error) {
+	return p.profileRepository.Create(user, profile)
 }
 
 func (p *profileService) Update(profile *domain.Profile) (*domain.Profile, error) {
@@ -34,9 +32,6 @@ func (p *profileService) Update(profile *domain.Profile) (*domain.Profile, error
 }
 
 func (p *profileService) MeProfile(c echo.Context) (*domain.Profile, error) {
-	userId, ok := c.Get("userId").(uuid.UUID)
-	if !ok {
-		return nil, errors.New(locales.CouldNotGetUserId)
-	}
+	userId, _ := c.Get("userId").(uuid.UUID)
 	return p.profileRepository.FindByUserId(userId)
 }

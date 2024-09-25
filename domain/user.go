@@ -7,15 +7,17 @@ import (
 )
 
 type User struct {
-	ID        uuid.UUID `json:"id,omitempty" gorm:"type:uuid;primaryKey"`
-	Email     string    `json:"email,omitempty" gorm:"unique;index;not null"`
-	Password  string    `json:"password,omitempty" gorm:"not null"`
-	ProfileId uuid.UUID `json:"profile_id,omitempty" gorm:"type:uuid;default:null"`
-	Profile   Profile   `json:"profile" gorm:"foreign:ProfileId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	Roles     []Role    `json:"roles,omitempty" gorm:"many2many:user_roles;"`
-	CreatedAt int64
-	UpdatedAt int64
+	ID           uuid.UUID     `json:"id,omitempty" gorm:"type:uuid;primaryKey"`
+	Email        string        `json:"email,omitempty" gorm:"unique;index;not null" validate:"required,email"`
+	Password     string        `json:"password,omitempty" gorm:"not null" validate:"required"`
+	ProfileId    string        `json:"profile_id,omitempty" gorm:"type:uuid;default:null"`
+	Profile      *Profile      `json:"profile" gorm:"foreign:ProfileId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	CompanyUsers *CompanyUsers `json:"company_users" gorm:"references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	CreatedAt    int64
+	UpdatedAt    int64
 }
+
+type Users []User
 
 func (u *User) BeforeCreate(ctx *gorm.DB) (err error) {
 	u.ID = uuid.New()

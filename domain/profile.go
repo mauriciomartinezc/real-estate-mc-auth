@@ -2,17 +2,17 @@ package domain
 
 import (
 	"github.com/google/uuid"
-	"github.com/mauriciomartinezc/real-estate-mc-common/domain"
+	commonDomain "github.com/mauriciomartinezc/real-estate-mc-common/domain"
 	"gorm.io/gorm"
 	"time"
 )
 
 type Profile struct {
-	ID        uuid.UUID   `json:"id,omitempty" gorm:"type:uuid;primary_key"`
-	FirstName string      `json:"first_name,omitempty" gorm:"type:varchar(255)"`
-	LastName  string      `json:"last_name,omitempty" gorm:"type:varchar(255)"`
-	CityId    uuid.UUID   `json:"city_id,omitempty" gorm:"type:uuid;default:null"`
-	City      domain.City `json:"city,omitempty" gorm:"foreignKey:CityId"`
+	ID        uuid.UUID          `json:"id,omitempty" gorm:"type:uuid;primary_key"`
+	FirstName string             `json:"first_name,omitempty" gorm:"type:varchar(255)" validate:"required"`
+	LastName  string             `json:"last_name,omitempty" gorm:"type:varchar(255)" validate:"required"`
+	CityId    string             `json:"city_id,omitempty" gorm:"type:uuid;default:null" validate:"required"`
+	City      *commonDomain.City `json:"city,omitempty" gorm:"-"`
 	CreatedAt int64
 	UpdatedAt int64
 }
