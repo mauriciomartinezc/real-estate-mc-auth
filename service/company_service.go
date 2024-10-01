@@ -11,6 +11,7 @@ type CompanyService interface {
 	FindById(id string) (*domain.Company, error)
 	Update(company *domain.Company) error
 	AssociateUserToCompany(company *domain.Company, user domain.User, role domain.Role, userCreator domain.User) error
+	CompaniesMe(user domain.User) (domain.Companies, error)
 }
 
 type companyService struct {
@@ -35,4 +36,8 @@ func (s *companyService) Update(company *domain.Company) error {
 
 func (s *companyService) AssociateUserToCompany(company *domain.Company, user domain.User, role domain.Role, userCreator domain.User) error {
 	return s.companyRepository.AssociateUserToCompany(company, user, role, userCreator)
+}
+
+func (s *companyService) CompaniesMe(user domain.User) (domain.Companies, error) {
+	return s.companyRepository.CompaniesMe(user)
 }

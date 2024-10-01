@@ -11,6 +11,7 @@ type CompanyRepository interface {
 	FindByID(id uuid.UUID) (*domain.Company, error)
 	Update(company *domain.Company) error
 	AssociateUserToCompany(company *domain.Company, user domain.User, role domain.Role, userCreator domain.User) error
+	CompaniesMe(user domain.User) (domain.Companies, error)
 }
 
 type companyRepository struct {
@@ -68,4 +69,18 @@ func (r *companyRepository) AssociateUserToCompany(company *domain.Company, user
 	}
 
 	return nil
+}
+
+func (r *companyRepository) CompaniesMe(user domain.User) (domain.Companies, error) {
+	var companies domain.Companies
+
+	err := r.db.Joins("JOIN company_users ON company_users.company_id = companies.id").
+		Where("company_users.user_id = ?", user.ID).
+		Find(&companies).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return companies, nil
 }

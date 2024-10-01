@@ -19,6 +19,7 @@ type Company struct {
 	DigitalSignatureID string             `json:"digital_signature_id,omitempty" gorm:"null"`
 	CreatedAt          int64              `json:"created_at,omitempty" gorm:"autoCreateTime"`
 	UpdatedAt          int64              `json:"updated_at,omitempty" gorm:"autoUpdateTime"`
+	CompanyUsers       CompanyUsers       `json:"company_users,omitempty" gorm:"foreignKey:CompanyId"`
 }
 
 type Companies []Company

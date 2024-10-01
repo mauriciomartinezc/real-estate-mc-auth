@@ -20,6 +20,7 @@ func NewCompanyHandler(e *echo.Group, companyService service.CompanyService) {
 	e.POST("/companies", handler.CreateCompany)
 	e.GET("/companies/:uuid", handler.FindCompany)
 	e.PUT("/companies/:uuid", handler.UpdateCompany)
+	e.GET("/companies/me", handler.CompaniesMe)
 }
 
 func (h *CompanyHandler) CreateCompany(c echo.Context) error {
@@ -77,4 +78,14 @@ func (h *CompanyHandler) UpdateCompany(c echo.Context) error {
 	}
 
 	return utils.SendSuccess(c, locales.SuccessResponse, company)
+}
+
+func (h *CompanyHandler) CompaniesMe(c echo.Context) error {
+	userInterface := c.Get("user")
+	user, _ := userInterface.(domain.User)
+	companies, err := h.companyService.CompaniesMe(user)
+	if err != nil {
+		return utils.SendInternalServerError(c, err.Error())
+	}
+	return utils.SendSuccess(c, locales.SuccessResponse, companies)
 }
