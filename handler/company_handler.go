@@ -64,11 +64,11 @@ func (h *CompanyHandler) UpdateCompany(c echo.Context) error {
 
 	company, err := h.companyService.FindById(companyUuid)
 
-	if err := c.Bind(company); err != nil {
+	if err = c.Bind(company); err != nil {
 		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
 
-	if err := validate.Struct(company); err != nil {
+	if err = validate.Struct(company); err != nil {
 		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
 	}
 

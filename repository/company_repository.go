@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"gorm.io/gorm"
@@ -42,6 +43,7 @@ func (r *companyRepository) Create(company *domain.Company, user domain.User) er
 func (r *companyRepository) FindByID(id uuid.UUID) (*domain.Company, error) {
 	var company domain.Company
 	if err := r.db.First(&company, "id = ?", id).Error; err != nil {
+		fmt.Printf("%s %v", "ErrorRepositoryCompany", err)
 		return nil, err
 	}
 	return &company, nil

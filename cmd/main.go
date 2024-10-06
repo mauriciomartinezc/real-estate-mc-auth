@@ -65,12 +65,14 @@ func run() error {
 	roleRepo := repository.NewRoleRepository(db)
 	permissionRepo := repository.NewPermissionRepository(db)
 	companyRepo := repository.NewCompanyRepository(db)
+	companyUserRepo := repository.NewCompanyUserRepository(db)
 
 	userService := service.NewUserService(userRepo)
 	profileService := service.NewProfileService(profileRepo)
 	roleService := service.NewRoleService(roleRepo)
 	permissionService := service.NewPermissionService(permissionRepo)
 	companyService := service.NewCompanyService(companyRepo)
+	companyUserService := service.NewCompanyUserService(companyUserRepo)
 
 	e := echo.New()
 	e.Use(middleware.LanguageHandler())
@@ -81,6 +83,7 @@ func run() error {
 	handler.NewRoleHandler(api, roleService)
 	handler.NewPermissionHandler(api, permissionService)
 	handler.NewCompanyHandler(api, companyService)
+	handler.NewCompanyUserHandler(api, companyUserService, userService, companyService)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 

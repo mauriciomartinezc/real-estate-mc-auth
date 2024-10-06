@@ -43,5 +43,32 @@
   },
   "Password": {
     "other": "Password"
+  },
+  "Name": {
+    "other": "Name"
+  },
+  "ContactEmail": {
+    "other": "Contact email"
+  },
+  "ContactPhone": {
+    "other": "Contact phone"
+  },
+  "BillingAddress": {
+    "other": "Billing address"
+  },
+  "TaxID": {
+    "other": "Tax ID"
+  },
+  "CityId": {
+    "other": "City"
+  },
+  "CompanyId": {
+    "other": "Id's company"
+  },
+  "UserId": {
+    "other": "Id's user"
+  },
+  "Roles": {
+    "other": "Roles"
   }
 }
