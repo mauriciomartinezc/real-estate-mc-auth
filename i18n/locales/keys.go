@@ -11,4 +11,5 @@ const (
 	InvalidExpiredJWT              = "InvalidExpiredJWT"
 	ProfileSuccess                 = "ProfileSuccess"
 	InvalidValueFor                = "InvalidValueFor"
+	UserAlreadyAssociatedCompany   = "UserAlreadyAssociatedCompany"
 )

@@ -73,5 +73,8 @@
   },
   "Roles": {
     "other": "Roles"
+  },
+  "UserAlreadyAssociatedCompany": {
+    "other": "El usuario ya está asociado a esta empresa"
   }
 }

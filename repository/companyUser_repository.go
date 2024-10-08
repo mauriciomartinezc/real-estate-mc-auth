@@ -1,7 +1,9 @@
 package repository
 
 import (
+	"errors"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"gorm.io/gorm"
 )
 
@@ -18,8 +20,16 @@ func NewCompanyUserRepository(db *gorm.DB) CompanyUserRepository {
 	return &companyUserRepository{db: db}
 }
 
-func (r companyUserRepository) AddUserToCompany(userAuth domain.User, user *domain.User, company *domain.Company, roles domain.Roles) error {
+func (r *companyUserRepository) AddUserToCompany(userAuth domain.User, user *domain.User, company *domain.Company, roles domain.Roles) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
+		var existingCompanyUser domain.CompanyUser
+
+		tx.Where("user_id = ? AND company_id = ?", user.ID.String(), company.ID.String()).First(&existingCompanyUser)
+
+		if len(existingCompanyUser.CompanyId) > 0 {
+			return errors.New(locales.UserAlreadyAssociatedCompany)
+		}
+
 		companyUser := domain.CompanyUser{
 			CreatorId: userAuth.ID.String(),
 			UserId:    user.ID.String(),
@@ -61,26 +71,37 @@ func (r companyUserRepository) SyncUserRolesInCompany(user domain.User, company 
 }
 
 func addRolesInBatch(tx *gorm.DB, companyUser domain.CompanyUser, roles domain.Roles) error {
-	var companyUserRoles domain.CompanyUserRoles
-
-	for _, role := range roles {
-		companyUserRoles = append(companyUserRoles, domain.CompanyUserRole{
-			CompanyUserId: companyUser.ID.String(),
-			RoleId:        role.ID.String(),
-			CompanyUser:   companyUser,
-			Role:          role,
-		})
+	var existingRoles []domain.CompanyUserRole
+	if err := tx.Where("company_user_id = ?", companyUser.ID.String()).Find(&existingRoles).Error; err != nil {
+		return err
 	}
 
-	if err := tx.Create(&companyUserRoles).Error; err != nil {
-		return err
+	existingRoleMap := make(map[string]bool)
+	for _, role := range existingRoles {
+		existingRoleMap[role.RoleId] = true
+	}
+
+	var companyUserRoles []domain.CompanyUserRole
+
+	for _, role := range roles {
+		if !existingRoleMap[role.ID.String()] {
+			companyUserRoles = append(companyUserRoles, domain.CompanyUserRole{
+				CompanyUserId: companyUser.ID.String(),
+				RoleId:        role.ID.String(),
+			})
+		}
+	}
+
+	if len(companyUserRoles) > 0 {
+		if err := tx.Create(&companyUserRoles).Error; err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 func syncRoles(tx *gorm.DB, companyUser domain.CompanyUser, newRoles domain.Roles, existingRoles domain.CompanyUserRoles) error {
-	// Crear mapas para roles actuales y nuevos
 	existingRoleMap := make(map[string]bool)
 	for _, role := range existingRoles {
 		existingRoleMap[role.RoleId] = true
@@ -89,18 +110,17 @@ func syncRoles(tx *gorm.DB, companyUser domain.CompanyUser, newRoles domain.Role
 	newRoleMap := make(map[string]bool)
 	for _, role := range newRoles {
 		newRoleMap[role.ID.String()] = true
-		// Agregar nuevos roles si no existen
 		if !existingRoleMap[role.ID.String()] {
-			if err := tx.Create(&domain.CompanyUserRole{
+			newRole := domain.CompanyUserRole{
 				CompanyUserId: companyUser.ID.String(),
 				RoleId:        role.ID.String(),
-			}).Error; err != nil {
+			}
+			if err := tx.Create(&newRole).Error; err != nil {
 				return err
 			}
 		}
 	}
 
-	// Eliminar roles que ya no están en la solicitud
 	for _, existingRole := range existingRoles {
 		if !newRoleMap[existingRole.RoleId] {
 			if err := tx.Where("company_user_id = ? AND role_id = ?", companyUser.ID.String(), existingRole.RoleId).

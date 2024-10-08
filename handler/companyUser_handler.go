@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
@@ -56,6 +57,9 @@ func (h *CompanyUserHandler) AddUserToCompany(c echo.Context) error {
 	}
 
 	if err = h.companyUserService.AddUserToCompany(userAuth, user, company, request.Roles); err != nil {
+		if err.Error() == localesAuth.UserAlreadyAssociatedCompany {
+			return utils.SendBadRequest(c, err.Error())
+		}
 		return utils.SendInternalServerError(c, err.Error())
 	}
 
