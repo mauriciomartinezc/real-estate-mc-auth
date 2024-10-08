@@ -1,8 +1,10 @@
 package repository
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -14,6 +16,7 @@ type UserRepository interface {
 	CheckPasswordHash(password, hash string) bool
 	Find(uuid uuid.UUID, preload ...string) (*domain.User, error)
 	UpdateProfileId(user *domain.User, profile *domain.Profile) error
+	ResetPassword(user domain.User, oldPassword string, newPassword string) error
 }
 
 type userRepository struct {
@@ -101,4 +104,24 @@ func (r *userRepository) UpdateProfileId(user *domain.User, profile *domain.Prof
 		return err
 	}
 	return nil
+}
+
+func (r *userRepository) ResetPassword(user domain.User, oldPassword string, newPassword string) error {
+	r.db.Where("id = ?", user.ID).First(&user)
+
+	validatePassword := r.CheckPasswordHash(oldPassword, user.Password)
+
+	if !validatePassword {
+		return errors.New(locales.InvalidOldPassword)
+	}
+
+	hashedPassword, err := r.HashPassword(newPassword)
+
+	if err != nil {
+		return err
+	}
+
+	user.Password = hashedPassword
+	user.RequiredResetPassword = false
+	return r.db.Save(&user).Error
 }

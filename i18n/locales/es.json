@@ -85,5 +85,23 @@
   },
   "LastName": {
     "other": "Apellidos"
+  },
+  "NotRequiredResetPassword": {
+    "other": "El usuario no require cambiar la contraseña"
+  },
+  "OldPassword": {
+    "other": "La anterior contraseña"
+  },
+  "NewPassword": {
+    "other": "La nueva contraseña"
+  },
+  "ConfirmedNewPassword": {
+    "other": "La confirmación nueva contraseña"
+  },
+  "ResetPasswordSuccess": {
+    "other": "Contraseña cambiada con éxito"
+  },
+  "InvalidOldPassword": {
+    "other": "Contraseña anterior no valida"
   }
 }

@@ -82,5 +82,23 @@
   },
   "LastName": {
     "other": "Last name"
+  },
+  "NotRequiredResetPassword": {
+    "other": "User not required change password"
+  },
+  "OldPassword": {
+    "other": "Old password"
+  },
+  "NewPassword": {
+    "other": "New password"
+  },
+  "ConfirmedNewPassword": {
+    "other": "Confirmed new password"
+  },
+  "ResetPasswordSuccess": {
+    "other": "Reset password success"
+  },
+  "InvalidOldPassword": {
+    "other": "Old password invalid"
   }
 }

@@ -9,6 +9,7 @@ import (
 	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
@@ -42,8 +43,7 @@ func (h *CompanyUserHandler) AddUserToCompany(c echo.Context) error {
 		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
 	}
 
-	userInterface := c.Get("user")
-	userAuth, _ := userInterface.(domain.User)
+	userAuth := utilsAuth.UserAuth(c)
 
 	company, err := h.companyService.FindById(companyUserRequest.CompanyId)
 
@@ -86,8 +86,7 @@ func (h *CompanyUserHandler) UpdateCompanyUser(c echo.Context) error {
 		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
 	}
 
-	userInterface := c.Get("user")
-	userAuth, _ := userInterface.(domain.User)
+	userAuth := utilsAuth.UserAuth(c)
 
 	if err = h.companyUserService.SyncUserRolesInCompany(userAuth, companyUser, companyUserRequest.Roles); err != nil {
 		return utils.SendInternalServerError(c, err.Error())
@@ -141,8 +140,7 @@ func (h *CompanyUserHandler) CreateUser(c echo.Context) error {
 		return utils.SendBadRequest(c, locales.ErrorPayload)
 	}
 
-	userInterface := c.Get("user")
-	userAuth, _ := userInterface.(domain.User)
+	userAuth := utilsAuth.UserAuth(c)
 
 	userDomain := &domain.User{
 		Email:                 userRequest.Email,

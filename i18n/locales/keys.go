@@ -12,4 +12,7 @@ const (
 	ProfileSuccess                 = "ProfileSuccess"
 	InvalidValueFor                = "InvalidValueFor"
 	UserAlreadyAssociatedCompany   = "UserAlreadyAssociatedCompany"
+	NotRequiredResetPassword       = "NotRequiredResetPassword"
+	ResetPasswordSuccess           = "ResetPasswordSuccess"
+	InvalidOldPassword             = "InvalidOldPassword"
 )

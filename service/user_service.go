@@ -14,6 +14,7 @@ type UserService interface {
 	Login(email string, password string) (*domain.User, string, error)
 	Find(uuid uuid.UUID) (*domain.User, error)
 	UpdateProfileId(user *domain.User, profile *domain.Profile) error
+	ResetPassword(user domain.User, oldPassword string, newPassword string) error
 }
 
 type userService struct {
@@ -72,4 +73,8 @@ func (s *userService) Find(uuid uuid.UUID) (*domain.User, error) {
 
 func (s *userService) UpdateProfileId(user *domain.User, profile *domain.Profile) error {
 	return s.userRepository.UpdateProfileId(user, profile)
+}
+
+func (s *userService) ResetPassword(user domain.User, oldPassword string, newPassword string) error {
+	return s.userRepository.ResetPassword(user, oldPassword, newPassword)
 }

@@ -11,3 +11,10 @@ type UserRequest struct {
 	Roles     domain.Roles `json:"roles" validate:"required"`
 	CompanyId string       `json:"company_id" validate:"required"`
 }
+
+type ChangePasswordRequest struct {
+	UserId               string `json:"user_id" validate:"required"`
+	OldPassword          string `json:"old_password" validate:"required"`
+	NewPassword          string `json:"new_password" validate:"required"`
+	ConfirmedNewPassword string `json:"confirmed_new_password" validate:"required"`
+}

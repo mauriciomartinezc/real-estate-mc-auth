@@ -5,6 +5,7 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
@@ -33,8 +34,7 @@ func (h *CompanyHandler) CreateCompany(c echo.Context) error {
 		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
 	}
 
-	userInterface := c.Get("user")
-	user, _ := userInterface.(domain.User)
+	user := utilsAuth.UserAuth(c)
 
 	err := h.companyService.Create(company, user)
 	if err != nil {
@@ -81,8 +81,7 @@ func (h *CompanyHandler) UpdateCompany(c echo.Context) error {
 }
 
 func (h *CompanyHandler) CompaniesMe(c echo.Context) error {
-	userInterface := c.Get("user")
-	user, _ := userInterface.(domain.User)
+	user := utilsAuth.UserAuth(c)
 	companies, err := h.companyService.CompaniesMe(user)
 	if err != nil {
 		return utils.SendInternalServerError(c, err.Error())
