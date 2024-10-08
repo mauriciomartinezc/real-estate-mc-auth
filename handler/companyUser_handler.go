@@ -145,9 +145,10 @@ func (h *CompanyUserHandler) CreateUser(c echo.Context) error {
 	userAuth, _ := userInterface.(domain.User)
 
 	userDomain := &domain.User{
-		Email:         userRequest.Email,
-		Password:      userRequest.Password,
-		CreateForUser: true,
+		Email:                 userRequest.Email,
+		Password:              userRequest.Password,
+		CreateForUser:         true,
+		RequiredResetPassword: true,
 	}
 
 	if err = h.userService.RegisterUser(userDomain); err != nil {
