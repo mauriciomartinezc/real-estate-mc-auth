@@ -9,7 +9,9 @@ import (
 
 type CompanyUserRepository interface {
 	AddUserToCompany(userAuth domain.User, user *domain.User, company *domain.Company, roles domain.Roles) error
-	SyncUserRolesInCompany(user domain.User, company *domain.Company, roles domain.Roles) error
+	SyncUserRolesInCompany(userAuth domain.User, companyUser *domain.CompanyUser, roles domain.Roles) error
+	FindById(id string, preloads ...string) (*domain.CompanyUser, error)
+	Delete(companyUser *domain.CompanyUser) error
 }
 
 type companyUserRepository struct {
@@ -24,17 +26,18 @@ func (r *companyUserRepository) AddUserToCompany(userAuth domain.User, user *dom
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		var existingCompanyUser domain.CompanyUser
 
-		tx.Where("user_id = ? AND company_id = ?", user.ID.String(), company.ID.String()).First(&existingCompanyUser)
-
-		if len(existingCompanyUser.CompanyId) > 0 {
+		err := tx.Where("user_id = ? AND company_id = ?", user.ID, company.ID).First(&existingCompanyUser).Error
+		if err == nil {
 			return errors.New(locales.UserAlreadyAssociatedCompany)
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			return err
 		}
 
 		companyUser := domain.CompanyUser{
 			CreatorId: userAuth.ID.String(),
 			UserId:    user.ID.String(),
 			CompanyId: company.ID.String(),
-			Roles:     &roles,
+			UpdaterId: nil,
 		}
 
 		if err := tx.Create(&companyUser).Error; err != nil {
@@ -49,11 +52,12 @@ func (r *companyUserRepository) AddUserToCompany(userAuth domain.User, user *dom
 	})
 }
 
-func (r companyUserRepository) SyncUserRolesInCompany(user domain.User, company *domain.Company, roles domain.Roles) error {
+func (r companyUserRepository) SyncUserRolesInCompany(userAuth domain.User, companyUser *domain.CompanyUser, roles domain.Roles) error {
 	return r.db.Transaction(func(tx *gorm.DB) error {
-		var companyUser domain.CompanyUser
+		updaterId := userAuth.ID.String()
+		companyUser.UpdaterId = &updaterId
 
-		if err := tx.Where("user_id = ? AND company_id = ?", user.ID.String(), company.ID.String()).First(&companyUser).Error; err != nil {
+		if err := tx.Save(companyUser).Error; err != nil {
 			return err
 		}
 
@@ -62,7 +66,39 @@ func (r companyUserRepository) SyncUserRolesInCompany(user domain.User, company 
 			return err
 		}
 
-		if err := syncRoles(tx, companyUser, roles, existingRoles); err != nil {
+		if err := syncRoles(tx, *companyUser, roles, existingRoles); err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+
+func (r companyUserRepository) FindById(id string, preloads ...string) (*domain.CompanyUser, error) {
+	var companyUser domain.CompanyUser
+
+	query := r.db.Where("id = ?", id)
+
+	for _, preload := range preloads {
+		query = query.Preload(preload)
+	}
+
+	if err := query.First(&companyUser).Error; err != nil {
+		return &companyUser, err
+	}
+
+	return &companyUser, nil
+}
+
+func (r companyUserRepository) Delete(companyUser *domain.CompanyUser) error {
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		var existingRoles []domain.CompanyUserRole
+
+		if err := tx.Where("company_user_id = ?", companyUser.ID).Delete(&existingRoles).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Where("id = ?", companyUser.ID).Delete(&companyUser).Error; err != nil {
 			return err
 		}
 

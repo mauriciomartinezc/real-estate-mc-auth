@@ -22,7 +22,7 @@ log = "build-errors.log"
 poll = false
 poll_interval = 0
 post_cmd = []
-pre_cmd = []
+pre_cmd = ["chmod -R 755 ./tmp"]
 rerun = false
 rerun_delay = 500
 send_interrupt = false
@@ -50,10 +50,3 @@ proxy_port = 0
 [screen]
 clear_on_rebuild = false
 keep_scroll = true
-
-[watcher]
-include = ["."]
-exclude = ["vendor", "logs", "tmp"]
-
-[watcher.ignore]
-extensions = ["*.tmp", "*.log"]

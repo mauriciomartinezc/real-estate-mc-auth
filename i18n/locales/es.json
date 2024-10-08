@@ -76,5 +76,8 @@
   },
   "UserAlreadyAssociatedCompany": {
     "other": "El usuario ya está asociado a esta empresa"
+  },
+  "InvalidUuid": {
+    "other": "Uuid invalido"
   }
 }
