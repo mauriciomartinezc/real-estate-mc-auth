@@ -7,6 +7,3 @@ type CompanyUserRequest struct {
 	UserId    string       `json:"user_id" validate:"required"`
 	Roles     domain.Roles `json:"roles" validate:"required"`
 }
-
-type CompanyUserResponse struct {
-}
