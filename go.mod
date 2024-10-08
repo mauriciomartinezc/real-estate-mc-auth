@@ -19,7 +19,7 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-//replace github.com/mauriciomartinezc/real-estate-mc-common => ../common_mc
+//replace github.com/mauriciomartinezc/real-estate-mc-common => ../mc-common
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
