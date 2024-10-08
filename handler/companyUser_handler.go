@@ -14,15 +14,17 @@ import (
 )
 
 type CompanyUserHandler struct {
-	userService        service.UserService
-	companyService     service.CompanyService
 	companyUserService service.CompanyUserService
+	userService        service.UserService
+	profileService     service.ProfileService
+	companyService     service.CompanyService
 }
 
-func NewCompanyUserHandler(e *echo.Group, companyUserService service.CompanyUserService, userService service.UserService, companyService service.CompanyService) {
-	handler := &CompanyUserHandler{companyUserService: companyUserService, userService: userService, companyService: companyService}
+func NewCompanyUserHandler(e *echo.Group, companyUserService service.CompanyUserService, userService service.UserService, profileService service.ProfileService, companyService service.CompanyService) {
+	handler := &CompanyUserHandler{companyUserService: companyUserService, userService: userService, profileService: profileService, companyService: companyService}
 	e.Use(middleware.JWTAuth)
 
+	e.POST("/users", handler.CreateUser)
 	e.GET("/companyUsers/:uuid", handler.FindById)
 	e.POST("/companyUsers", handler.AddUserToCompany)
 	e.PUT("/companyUsers/:uuid", handler.UpdateCompanyUser)
@@ -120,4 +122,60 @@ func (h *CompanyUserHandler) DeleteCompanyUser(c echo.Context) error {
 	}
 
 	return utils.SendSuccess(c, locales.SuccessResponse, nil)
+}
+
+func (h *CompanyUserHandler) CreateUser(c echo.Context) error {
+	userRequest := request.UserRequest{}
+
+	if err := c.Bind(&userRequest); err != nil {
+		return utils.SendBadRequest(c, locales.ErrorPayload)
+	}
+
+	if err := validate.Struct(userRequest); err != nil {
+		return utils.SendErrorValidations(c, locales.ErrorPayload, err)
+	}
+
+	company, err := h.companyService.FindById(userRequest.CompanyId)
+
+	if err != nil {
+		return utils.SendBadRequest(c, locales.ErrorPayload)
+	}
+
+	userInterface := c.Get("user")
+	userAuth, _ := userInterface.(domain.User)
+
+	userDomain := &domain.User{
+		Email:         userRequest.Email,
+		Password:      userRequest.Password,
+		CreateForUser: true,
+	}
+
+	if err = h.userService.RegisterUser(userDomain); err != nil {
+		if err.Error() == localesAuth.EmailAlreadyRegistered {
+			return utils.SendBadRequest(c, err.Error())
+		}
+		return utils.SendInternalServerError(c, err.Error())
+	}
+
+	userDomain, _ = h.userService.Find(userDomain.ID)
+	profile := userDomain.Profile
+
+	profile.FirstName = &userRequest.FirstName
+	profile.LastName = &userRequest.LastName
+	profile.CityId = &userRequest.CityId
+
+	profile, err = h.profileService.Update(profile)
+
+	if err != nil {
+		return utils.SendInternalServerError(c, err.Error())
+	}
+
+	if err = h.companyUserService.AddUserToCompany(userAuth, userDomain, company, userRequest.Roles); err != nil {
+		if err.Error() == localesAuth.UserAlreadyAssociatedCompany {
+			return utils.SendBadRequest(c, err.Error())
+		}
+		return utils.SendInternalServerError(c, err.Error())
+	}
+
+	return utils.SendCreated(c, locales.SuccessCreated, userDomain)
 }

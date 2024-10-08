@@ -39,7 +39,7 @@ func (h *ProfileHandler) Create(c echo.Context) error {
 		return utils.SendInternalServerError(c, err.Error())
 	}
 
-	if utils.IsValidUUID(user.ProfileId) {
+	if utils.IsValidUUID(*user.ProfileId) {
 		return utils.SendSuccess(c, locales.SuccessCreated, user.Profile)
 	}
 

@@ -79,5 +79,11 @@
   },
   "InvalidUuid": {
     "other": "Uuid invalido"
+  },
+  "FirstName": {
+    "other": "Nombres"
+  },
+  "LastName": {
+    "other": "Apellidos"
   }
 }

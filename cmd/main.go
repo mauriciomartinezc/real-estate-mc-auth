@@ -76,6 +76,7 @@ func run() error {
 
 	e := echo.New()
 	e.Use(middleware.LanguageHandler())
+	handler.InitValidate()
 
 	api := e.Group("/api")
 	handler.NewUserHandler(api, userService)
@@ -83,7 +84,7 @@ func run() error {
 	handler.NewRoleHandler(api, roleService)
 	handler.NewPermissionHandler(api, permissionService)
 	handler.NewCompanyHandler(api, companyService)
-	handler.NewCompanyUserHandler(api, companyUserService, userService, companyService)
+	handler.NewCompanyUserHandler(api, companyUserService, userService, profileService, companyService)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 

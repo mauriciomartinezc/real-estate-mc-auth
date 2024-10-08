@@ -32,8 +32,8 @@ func ToCompanyUserResponse(companyUser domain.CompanyUser) CompanyUserResponse {
 	userResponse := UserResponse{}
 	if companyUser.User != nil && companyUser.User.Profile != nil {
 		userResponse.Profile = ProfileResponse{
-			FirstName: companyUser.User.Profile.FirstName,
-			LastName:  companyUser.User.Profile.LastName,
+			FirstName: *companyUser.User.Profile.FirstName,
+			LastName:  *companyUser.User.Profile.LastName,
 		}
 	}
 
@@ -42,8 +42,8 @@ func ToCompanyUserResponse(companyUser domain.CompanyUser) CompanyUserResponse {
 	if companyUser.Creator != nil && companyUser.Creator.Profile != nil {
 		creatorResponse = UserResponse{
 			Profile: ProfileResponse{
-				FirstName: companyUser.Creator.Profile.FirstName,
-				LastName:  companyUser.Creator.Profile.LastName,
+				FirstName: *companyUser.Creator.Profile.FirstName,
+				LastName:  *companyUser.Creator.Profile.LastName,
 			},
 		}
 	}
@@ -53,8 +53,8 @@ func ToCompanyUserResponse(companyUser domain.CompanyUser) CompanyUserResponse {
 	if companyUser.Updater != nil && companyUser.Updater.Profile != nil {
 		updaterResponse = UserResponse{
 			Profile: ProfileResponse{
-				FirstName: companyUser.Updater.Profile.FirstName,
-				LastName:  companyUser.Updater.Profile.LastName,
+				FirstName: *companyUser.Updater.Profile.FirstName,
+				LastName:  *companyUser.Updater.Profile.LastName,
 			},
 		}
 	}

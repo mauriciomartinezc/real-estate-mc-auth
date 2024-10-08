@@ -9,9 +9,9 @@ import (
 
 type Profile struct {
 	ID        uuid.UUID          `json:"id,omitempty" gorm:"type:uuid;primary_key"`
-	FirstName string             `json:"first_name,omitempty" gorm:"type:varchar(255)" validate:"required"`
-	LastName  string             `json:"last_name,omitempty" gorm:"type:varchar(255)" validate:"required"`
-	CityId    string             `json:"city_id,omitempty" gorm:"type:uuid;default:null" validate:"required"`
+	FirstName *string            `json:"first_name,omitempty" gorm:"type:varchar(255)" validate:"required"`
+	LastName  *string            `json:"last_name,omitempty" gorm:"type:varchar(255)" validate:"required"`
+	CityId    *string            `json:"city_id,omitempty" gorm:"type:uuid;default:null" validate:"required"`
 	City      *commonDomain.City `json:"city,omitempty" gorm:"-"`
 	CreatedAt int64
 	UpdatedAt int64

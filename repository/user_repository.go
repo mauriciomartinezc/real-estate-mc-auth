@@ -3,7 +3,6 @@ package repository
 import (
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -47,13 +46,14 @@ func (r *userRepository) Create(user *domain.User) error {
 
 	user.Password = hashedPassword
 
-	if !utils.IsValidUUID(user.ProfileId) {
+	if user.ProfileId == nil {
 		profileRepository := NewProfileRepository(r.db)
 		profile, err := profileRepository.Create(user, new(domain.Profile))
 		if err != nil {
 			return err
 		}
-		user.ProfileId = profile.ID.String()
+		profileId := profile.ID.String()
+		user.ProfileId = &profileId
 	}
 
 	return r.db.Create(user).Error

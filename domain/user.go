@@ -7,14 +7,15 @@ import (
 )
 
 type User struct {
-	ID           uuid.UUID     `json:"id,omitempty" gorm:"type:uuid;primaryKey"`
-	Email        string        `json:"email,omitempty" gorm:"unique;index;not null" validate:"required,email"`
-	Password     string        `json:"password,omitempty" gorm:"not null" validate:"required"`
-	ProfileId    string        `json:"profile_id,omitempty" gorm:"type:uuid;default:null"`
-	Profile      *Profile      `json:"profile" gorm:"foreign:ProfileId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
-	CompanyUsers *CompanyUsers `json:"company_users" gorm:"references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
-	CreatedAt    int64
-	UpdatedAt    int64
+	ID            uuid.UUID     `json:"id,omitempty" gorm:"type:uuid;primaryKey"`
+	Email         string        `json:"email,omitempty" gorm:"unique;index;not null" validate:"required,email"`
+	Password      string        `json:"password,omitempty" gorm:"not null" validate:"required"`
+	ProfileId     *string       `json:"profile_id,omitempty" gorm:"type:uuid;default:null"`
+	Profile       *Profile      `json:"profile" gorm:"foreign:ProfileId;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	CompanyUsers  *CompanyUsers `json:"company_users" gorm:"references:ID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"`
+	CreateForUser bool          `json:"create_for_user,omitempty" gorm:"type:bool;default:false"`
+	CreatedAt     int64
+	UpdatedAt     int64
 }
 
 type Users []User

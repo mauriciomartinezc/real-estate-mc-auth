@@ -22,15 +22,17 @@ func createDefaultUser(userRepository repository.UserRepository, profileReposito
 	if userAdmin == nil {
 		roleAdmin := new(domain.Role)
 		roleAdmin.ID = domain.ROLES["SUPER_ADMIN"].ID
+		firstName := "Super Admin"
 		profile := &domain.Profile{
-			FirstName: "Super Admin",
+			FirstName: &firstName,
 		}
 		user := &domain.User{
 			Email:    "super.admin@realestate.com",
 			Password: "eg9k'_VBnY~VG3ibgnTqn3",
 		}
 		profile, _ = profileRepository.Create(user, profile)
-		user.ProfileId = profile.ID.String()
+		profileId := profile.ID.String()
+		user.ProfileId = &profileId
 		err := userRepository.Create(user)
 		if err != nil {
 			fmt.Printf("Error when create default user: %s\n", user.Email)
@@ -47,15 +49,16 @@ func generateUsers(userRepository repository.UserRepository, profileRepository r
 		firstName, lastName := generateFullName()
 		email := generateEmail()
 		profile := &domain.Profile{
-			FirstName: firstName,
-			LastName:  lastName,
+			FirstName: &firstName,
+			LastName:  &lastName,
 		}
 		user := &domain.User{
 			Email:    email,
 			Password: "Password",
 		}
 		profile, _ = profileRepository.Create(user, profile)
-		user.ProfileId = profile.ID.String()
+		profileId := profile.ID.String()
+		user.ProfileId = &profileId
 		err := userRepository.Create(user)
 		if err != nil {
 			return
