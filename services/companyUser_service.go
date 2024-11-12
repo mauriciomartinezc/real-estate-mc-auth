@@ -1,8 +1,8 @@
-package service
+package services
 
 import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
 )
 
 type CompanyUserService interface {
@@ -13,10 +13,10 @@ type CompanyUserService interface {
 }
 
 type companyUserService struct {
-	companyUserRepository repository.CompanyUserRepository
+	companyUserRepository repositories.CompanyUserRepository
 }
 
-func NewCompanyUserService(companyUserRepository repository.CompanyUserRepository) CompanyUserService {
+func NewCompanyUserService(companyUserRepository repositories.CompanyUserRepository) CompanyUserService {
 	return &companyUserService{companyUserRepository: companyUserRepository}
 }
 

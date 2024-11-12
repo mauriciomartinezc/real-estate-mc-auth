@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import (
 	"github.com/google/uuid"
@@ -7,29 +7,21 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain/request"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain/response"
 	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type CompanyUserHandler struct {
-	companyUserService service.CompanyUserService
-	userService        service.UserService
-	profileService     service.ProfileService
-	companyService     service.CompanyService
+	companyUserService services.CompanyUserService
+	userService        services.UserService
+	profileService     services.ProfileService
+	companyService     services.CompanyService
 }
 
-func NewCompanyUserHandler(e *echo.Group, companyUserService service.CompanyUserService, userService service.UserService, profileService service.ProfileService, companyService service.CompanyService) {
-	handler := &CompanyUserHandler{companyUserService: companyUserService, userService: userService, profileService: profileService, companyService: companyService}
-	e.Use(middleware.JWTAuth)
-
-	e.POST("/users", handler.CreateUser)
-	e.GET("/companyUsers/:uuid", handler.FindById)
-	e.POST("/companyUsers", handler.AddUserToCompany)
-	e.PUT("/companyUsers/:uuid", handler.UpdateCompanyUser)
-	e.DELETE("/companyUsers/:uuid", handler.DeleteCompanyUser)
+func NewCompanyUserHandler(companyUserService services.CompanyUserService, userService services.UserService, profileService services.ProfileService, companyService services.CompanyService) *CompanyUserHandler {
+	return &CompanyUserHandler{companyUserService: companyUserService, userService: userService, profileService: profileService, companyService: companyService}
 }
 
 func (h *CompanyUserHandler) AddUserToCompany(c echo.Context) error {

@@ -1,11 +1,11 @@
-package service
+package services
 
 import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
 	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 )
 
@@ -18,10 +18,10 @@ type UserService interface {
 }
 
 type userService struct {
-	userRepository repository.UserRepository
+	userRepository repositories.UserRepository
 }
 
-func NewUserService(userRepo repository.UserRepository) UserService {
+func NewUserService(userRepo repositories.UserRepository) UserService {
 	return &userService{
 		userRepository: userRepo,
 	}

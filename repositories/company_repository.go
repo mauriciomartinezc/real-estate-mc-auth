@@ -1,8 +1,9 @@
-package repository
+package repositories
 
 import (
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-common/cache"
 	"gorm.io/gorm"
 )
 
@@ -15,11 +16,12 @@ type CompanyRepository interface {
 }
 
 type companyRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache cache.Cache
 }
 
-func NewCompanyRepository(db *gorm.DB) CompanyRepository {
-	return &companyRepository{db: db}
+func NewCompanyRepository(db *gorm.DB, cache cache.Cache) CompanyRepository {
+	return &companyRepository{db: db, cache: cache}
 }
 
 func (r *companyRepository) Create(company *domain.Company, user domain.User) error {

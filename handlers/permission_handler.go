@@ -1,24 +1,21 @@
-package handler
+package handlers
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type PermissionHandler struct {
-	permissionService service.PermissionService
+	permissionService services.PermissionService
 }
 
-func NewPermissionHandler(e *echo.Group, permissionService service.PermissionService) {
-	handler := &PermissionHandler{
+func NewPermissionHandler(permissionService services.PermissionService) *PermissionHandler {
+	return &PermissionHandler{
 		permissionService: permissionService,
 	}
-
-	//e.Use(middleware.JWTAuth)
-	e.POST("/permissions", handler.CreatePermission)
 }
 
 func (h *PermissionHandler) CreatePermission(c echo.Context) error {

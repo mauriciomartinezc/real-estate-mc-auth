@@ -1,8 +1,8 @@
-package service
+package services
 
 import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
 )
 
 type RoleService interface {
@@ -11,10 +11,10 @@ type RoleService interface {
 }
 
 type roleService struct {
-	roleRepository repository.RoleRepository
+	roleRepository repositories.RoleRepository
 }
 
-func NewRoleService(roleRepo repository.RoleRepository) RoleService {
+func NewRoleService(roleRepo repositories.RoleRepository) RoleService {
 	return &roleService{
 		roleRepository: roleRepo,
 	}

@@ -1,7 +1,8 @@
-package repository
+package repositories
 
 import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-common/cache"
 	"gorm.io/gorm"
 )
 
@@ -11,11 +12,12 @@ type PermissionRepository interface {
 }
 
 type permissionRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache cache.Cache
 }
 
-func NewPermissionRepository(db *gorm.DB) PermissionRepository {
-	return &permissionRepository{db: db}
+func NewPermissionRepository(db *gorm.DB, cache cache.Cache) PermissionRepository {
+	return &permissionRepository{db: db, cache: cache}
 }
 
 func (r *permissionRepository) Create(permission *domain.Permission) error {

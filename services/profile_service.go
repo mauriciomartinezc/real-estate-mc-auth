@@ -1,10 +1,10 @@
-package service
+package services
 
 import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
 )
 
 type ProfileService interface {
@@ -14,10 +14,10 @@ type ProfileService interface {
 }
 
 type profileService struct {
-	profileRepository repository.ProfileRepository
+	profileRepository repositories.ProfileRepository
 }
 
-func NewProfileService(profileRepository repository.ProfileRepository) ProfileService {
+func NewProfileService(profileRepository repositories.ProfileRepository) ProfileService {
 	return &profileService{
 		profileRepository: profileRepository,
 	}

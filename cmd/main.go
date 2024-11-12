@@ -4,13 +4,12 @@ import (
 	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/handler"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/handlers"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/routes"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/roles"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/users"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
 	"github.com/mauriciomartinezc/real-estate-mc-common/config"
-	"github.com/mauriciomartinezc/real-estate-mc-common/middleware"
+	"github.com/mauriciomartinezc/real-estate-mc-common/middlewares"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -55,36 +54,16 @@ func run() error {
 		return fmt.Errorf("failed to auto migrate models: %w", err)
 	}
 
+	cacheClient := config.NewCacheClient()
+
 	// Seeds
-	roles.SyncRolesSeeds(db)
-	users.CreateUserSeeds(db, 0)
-
-	// Repositories and Services
-	userRepo := repository.NewUserRepository(db)
-	profileRepo := repository.NewProfileRepository(db)
-	roleRepo := repository.NewRoleRepository(db)
-	permissionRepo := repository.NewPermissionRepository(db)
-	companyRepo := repository.NewCompanyRepository(db)
-	companyUserRepo := repository.NewCompanyUserRepository(db)
-
-	userService := service.NewUserService(userRepo)
-	profileService := service.NewProfileService(profileRepo)
-	roleService := service.NewRoleService(roleRepo)
-	permissionService := service.NewPermissionService(permissionRepo)
-	companyService := service.NewCompanyService(companyRepo)
-	companyUserService := service.NewCompanyUserService(companyUserRepo)
+	roles.SyncRolesSeeds(db, cacheClient)
+	users.CreateUserSeeds(db, cacheClient, 0)
 
 	e := echo.New()
-	e.Use(middleware.LanguageHandler())
-	handler.InitValidate()
-
-	api := e.Group("/api")
-	handler.NewUserHandler(api, userService)
-	handler.NewProfileHandler(api, profileService, userService)
-	handler.NewRoleHandler(api, roleService)
-	handler.NewPermissionHandler(api, permissionService)
-	handler.NewCompanyHandler(api, companyService)
-	handler.NewCompanyUserHandler(api, companyUserService, userService, profileService, companyService)
+	e.Use(middlewares.LanguageHandler())
+	handlers.InitValidate()
+	routes.SetupRoutes(e, db, cacheClient)
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 

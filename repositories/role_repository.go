@@ -1,7 +1,8 @@
-package repository
+package repositories
 
 import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
+	"github.com/mauriciomartinezc/real-estate-mc-common/cache"
 	"gorm.io/gorm"
 )
 
@@ -11,11 +12,12 @@ type RoleRepository interface {
 }
 
 type roleRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache cache.Cache
 }
 
-func NewRoleRepository(db *gorm.DB) RoleRepository {
-	return &roleRepository{db: db}
+func NewRoleRepository(db *gorm.DB, cache cache.Cache) RoleRepository {
+	return &roleRepository{db: db, cache: cache}
 }
 
 func (r *roleRepository) Create(role *domain.Role) error {

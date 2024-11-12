@@ -1,31 +1,24 @@
-package handler
+package handlers
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain/request"
 	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type UserHandler struct {
-	userService service.UserService
+	userService services.UserService
 }
 
-func NewUserHandler(e *echo.Group, userService service.UserService) {
-	handler := &UserHandler{
+func NewUserHandler(userService services.UserService) *UserHandler {
+	return &UserHandler{
 		userService: userService,
 	}
-	groupRoute := e.Group("/auth")
-	groupRoute.POST("/register", handler.Register)
-	groupRoute.POST("/login", handler.Login)
-
-	e.Use(middleware.JWTAuth)
-	e.POST("/resetPassword", handler.ResetPassword)
 }
 
 func (h *UserHandler) Register(c echo.Context) error {

@@ -2,8 +2,8 @@ package tests
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/handler"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/handlers"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
@@ -18,8 +18,8 @@ func TestCreateRole(t *testing.T) {
 	rec := httptest.NewRecorder()
 	c := e.NewContext(req, rec)
 
-	roleService := service.NewRoleService(mockRoleRepo)
-	roleHandler := handler.NewRoleHandler(e, roleService)
+	roleService := services.NewRoleService(mockRoleRepo)
+	roleHandler := handlers.NewRoleHandler(e, roleService)
 
 	err := roleHandler.CreateRole(c)
 	if assert.NoError(t, err) {

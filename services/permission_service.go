@@ -1,8 +1,8 @@
-package service
+package services
 
 import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
 )
 
 type PermissionService interface {
@@ -11,10 +11,10 @@ type PermissionService interface {
 }
 
 type permissionService struct {
-	permissionRepository repository.PermissionRepository
+	permissionRepository repositories.PermissionRepository
 }
 
-func NewPermissionService(permissionRepo repository.PermissionRepository) PermissionService {
+func NewPermissionService(permissionRepo repositories.PermissionRepository) PermissionService {
 	return &permissionService{
 		permissionRepository: permissionRepo,
 	}

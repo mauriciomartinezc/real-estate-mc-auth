@@ -1,27 +1,20 @@
-package handler
+package handlers
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	utilsAuth "github.com/mauriciomartinezc/real-estate-mc-auth/utils"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type CompanyHandler struct {
-	companyService service.CompanyService
+	companyService services.CompanyService
 }
 
-func NewCompanyHandler(e *echo.Group, companyService service.CompanyService) {
-	handler := &CompanyHandler{companyService: companyService}
-	e.Use(middleware.JWTAuth)
-
-	e.POST("/companies", handler.CreateCompany)
-	e.GET("/companies/:uuid", handler.FindCompany)
-	e.PUT("/companies/:uuid", handler.UpdateCompany)
-	e.GET("/companies/me", handler.CompaniesMe)
+func NewCompanyHandler(companyService services.CompanyService) *CompanyHandler {
+	return &CompanyHandler{companyService: companyService}
 }
 
 func (h *CompanyHandler) CreateCompany(c echo.Context) error {

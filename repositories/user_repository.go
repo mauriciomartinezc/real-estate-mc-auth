@@ -1,10 +1,11 @@
-package repository
+package repositories
 
 import (
 	"errors"
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
+	"github.com/mauriciomartinezc/real-estate-mc-common/cache"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -20,11 +21,12 @@ type UserRepository interface {
 }
 
 type userRepository struct {
-	db *gorm.DB
+	db    *gorm.DB
+	cache cache.Cache
 }
 
-func NewUserRepository(db *gorm.DB) UserRepository {
-	return &userRepository{db: db}
+func NewUserRepository(db *gorm.DB, cache cache.Cache) UserRepository {
+	return &userRepository{db: db, cache: cache}
 }
 
 func (r *userRepository) HashPassword(password string) (string, error) {
@@ -50,7 +52,7 @@ func (r *userRepository) Create(user *domain.User) error {
 	user.Password = hashedPassword
 
 	if user.ProfileId == nil {
-		profileRepository := NewProfileRepository(r.db)
+		profileRepository := NewProfileRepository(r.db, r.cache)
 		profile, err := profileRepository.Create(user, new(domain.Profile))
 		if err != nil {
 			return err

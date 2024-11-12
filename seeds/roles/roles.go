@@ -3,12 +3,13 @@ package roles
 import (
 	"fmt"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
+	"github.com/mauriciomartinezc/real-estate-mc-common/cache"
 	"gorm.io/gorm"
 )
 
-func SyncRolesSeeds(db *gorm.DB) {
-	roleRepo := repository.NewRoleRepository(db)
+func SyncRolesSeeds(db *gorm.DB, cache cache.Cache) {
+	roleRepo := repositories.NewRoleRepository(db, cache)
 	for _, role := range domain.ROLES {
 		_, err := roleRepo.FindBySlug(role.Slug)
 		if err != nil {

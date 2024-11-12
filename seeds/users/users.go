@@ -4,20 +4,21 @@ import (
 	"fmt"
 	"github.com/bxcodec/faker/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
+	"github.com/mauriciomartinezc/real-estate-mc-common/cache"
 	"gorm.io/gorm"
 	"math/rand"
 	"time"
 )
 
-func CreateUserSeeds(db *gorm.DB, count int) {
-	userRepo := repository.NewUserRepository(db)
-	profileRepo := repository.NewProfileRepository(db)
+func CreateUserSeeds(db *gorm.DB, cache cache.Cache, count int) {
+	userRepo := repositories.NewUserRepository(db, cache)
+	profileRepo := repositories.NewProfileRepository(db, cache)
 	createDefaultUser(userRepo, profileRepo)
 	generateUsers(userRepo, profileRepo, count)
 }
 
-func createDefaultUser(userRepository repository.UserRepository, profileRepository repository.ProfileRepository) {
+func createDefaultUser(userRepository repositories.UserRepository, profileRepository repositories.ProfileRepository) {
 	userAdmin, _ := userRepository.FindByEmail("super.admin@realestate.com", false)
 	if userAdmin == nil {
 		roleAdmin := new(domain.Role)
@@ -41,7 +42,7 @@ func createDefaultUser(userRepository repository.UserRepository, profileReposito
 	}
 }
 
-func generateUsers(userRepository repository.UserRepository, profileRepository repository.ProfileRepository, count int) {
+func generateUsers(userRepository repositories.UserRepository, profileRepository repositories.ProfileRepository, count int) {
 	for i := 0; i < count; i++ {
 		roleData := getRandomRole()
 		role := new(domain.Role)

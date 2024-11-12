@@ -1,31 +1,25 @@
-package handler
+package handlers
 
 import (
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
 	localesAuth "github.com/mauriciomartinezc/real-estate-mc-auth/i18n/locales"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/middleware"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type ProfileHandler struct {
-	profileService service.ProfileService
-	userService    service.UserService
+	profileService services.ProfileService
+	userService    services.UserService
 }
 
-func NewProfileHandler(e *echo.Group, profileService service.ProfileService, userService service.UserService) {
-	handler := &ProfileHandler{
+func NewProfileHandler(profileService services.ProfileService, userService services.UserService) *ProfileHandler {
+	return &ProfileHandler{
 		profileService: profileService,
 		userService:    userService,
 	}
-	e.Use(middleware.JWTAuth)
-	groupRoute := e.Group("/auth")
-	groupRoute.POST("/profiles", handler.Create)
-	groupRoute.GET("/profiles", handler.MeProfile)
-	groupRoute.PUT("/profiles/:uuid", handler.Update)
 }
 
 func (h *ProfileHandler) Create(c echo.Context) error {

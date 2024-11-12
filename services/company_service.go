@@ -1,9 +1,9 @@
-package service
+package services
 
 import (
 	"github.com/google/uuid"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/repository"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/repositories"
 )
 
 type CompanyService interface {
@@ -15,10 +15,10 @@ type CompanyService interface {
 }
 
 type companyService struct {
-	companyRepository repository.CompanyRepository
+	companyRepository repositories.CompanyRepository
 }
 
-func NewCompanyService(companyRepository repository.CompanyRepository) CompanyService {
+func NewCompanyService(companyRepository repositories.CompanyRepository) CompanyService {
 	return &companyService{companyRepository: companyRepository}
 }
 

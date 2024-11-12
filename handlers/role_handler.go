@@ -1,24 +1,21 @@
-package handler
+package handlers
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/domain"
-	"github.com/mauriciomartinezc/real-estate-mc-auth/service"
+	"github.com/mauriciomartinezc/real-estate-mc-auth/services"
 	"github.com/mauriciomartinezc/real-estate-mc-common/i18n/locales"
 	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 )
 
 type RoleHandler struct {
-	roleService service.RoleService
+	roleService services.RoleService
 }
 
-func NewRoleHandler(e *echo.Group, roleService service.RoleService) {
-	handler := &RoleHandler{
+func NewRoleHandler(roleService services.RoleService) *RoleHandler {
+	return &RoleHandler{
 		roleService: roleService,
 	}
-
-	//e.Use(middleware.JWTAuth)
-	e.POST("/roles", handler.CreateRole)
 }
 
 func (h *RoleHandler) CreateRole(c echo.Context) error {
