@@ -9,7 +9,9 @@ import (
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/roles"
 	"github.com/mauriciomartinezc/real-estate-mc-auth/seeds/users"
 	"github.com/mauriciomartinezc/real-estate-mc-common/config"
+	"github.com/mauriciomartinezc/real-estate-mc-common/discovery/consul"
 	"github.com/mauriciomartinezc/real-estate-mc-common/middlewares"
+	"github.com/mauriciomartinezc/real-estate-mc-common/utils"
 	echoSwagger "github.com/swaggo/echo-swagger"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -56,11 +58,16 @@ func run() error {
 
 	cacheClient := config.NewCacheClient()
 
+	// Consul
+	discoveryClient := consul.NewConsultApi()
+	discoveryClient.RegisterService("mc-auth")
+
 	// Seeds
 	roles.SyncRolesSeeds(db, cacheClient)
 	users.CreateUserSeeds(db, cacheClient, 0)
 
 	e := echo.New()
+	utils.RouteHealth(e)
 	e.Use(middlewares.LanguageHandler())
 	handlers.InitValidate()
 	routes.SetupRoutes(e, db, cacheClient)
