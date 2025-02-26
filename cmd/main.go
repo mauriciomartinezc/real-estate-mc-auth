@@ -74,5 +74,14 @@ func run() error {
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
 
+	log.Println("Registered routes:")
+	for _, r := range e.Routes() {
+		// Filtrar la ruta no deseada
+		if r.Method == "echo_route_not_found" {
+			continue
+		}
+		fmt.Printf("%s %s\n", r.Method, r.Path)
+	}
+
 	return e.Start(":" + os.Getenv("SERVER_PORT"))
 }

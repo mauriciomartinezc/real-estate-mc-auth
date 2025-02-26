@@ -4,20 +4,20 @@ tmp_dir = "tmp"
 
 [build]
 # Config for Linux|macOS
-bin = "./tmp/main"
-cmd = "go build -o ./tmp/main ./cmd/."
-pre_cmd = ["rm -rf ./tmp/main", "chmod -R 755 ./tmp"]
+#bin = "./tmp/main"
+#cmd = "go build -o ./tmp/main ./cmd/."
+#pre_cmd = ["rm -rf ./tmp/main", "chmod -R 755 ./tmp"]
 # End config for Linux|macOS
 
 # Config for Windows
-#bin = "./tmp/main.exe"
-#cmd = "go build -o ./tmp/main.exe ./cmd/."
-#pre_cmd = []
+bin = "./tmp/main.exe"
+cmd = "go build -o ./tmp/main.exe ./cmd/."
+pre_cmd = []
 # End config for Windows
 
 args_bin = []
 delay = 1000
-exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+exclude_dir = ["assets", "tmp", "vendor", "testdata", ".idea", ".git", ".code"]
 exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = false

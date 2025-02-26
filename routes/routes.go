@@ -10,29 +10,37 @@ import (
 	"gorm.io/gorm"
 )
 
+// SetupRoutes inicializa las rutas principales
 func SetupRoutes(e *echo.Echo, db *gorm.DB, cache cache.Cache) {
-	g := e.Group("api")
-	company(g, db, cache)
-	companyUser(g, db, cache)
-	role(g, db, cache)
-	permission(g, db, cache)
-	profile(g, db, cache)
+	api := e.Group("/api")
+	api.Use(middleware.JWTAuth)
+
+	company(api, db, cache)
+	companyUser(api, db, cache)
+	role(api, db, cache)
+	permission(api, db, cache)
+	profile(api, db, cache)
+	user(api, db, cache) // Usuario no requiere autenticación para registro/login
 }
 
+// Rutas de Empresas (Companies)
 func company(g *echo.Group, db *gorm.DB, cache cache.Cache) {
+	group := g.Group("/companies")
+
 	repo := repositories.NewCompanyRepository(db, cache)
 	service := services.NewCompanyService(repo)
 	handler := handlers.NewCompanyHandler(service)
 
-	g.Use(middleware.JWTAuth)
-
-	g.POST("/companies", handler.CreateCompany)
-	g.GET("/companies/:uuid", handler.FindCompany)
-	g.PUT("/companies/:uuid", handler.UpdateCompany)
-	g.GET("/companies/me", handler.CompaniesMe)
+	group.POST("", handler.CreateCompany)
+	group.GET("/:uuid", handler.FindCompany)
+	group.PUT("/:uuid", handler.UpdateCompany)
+	group.GET("/me", handler.CompaniesMe)
 }
 
+// Rutas de Usuarios en Empresas (Company Users)
 func companyUser(g *echo.Group, db *gorm.DB, cache cache.Cache) {
+	group := g.Group("/companyUsers")
+
 	repoUser := repositories.NewUserRepository(db, cache)
 	serviceUser := services.NewUserService(repoUser)
 
@@ -46,36 +54,38 @@ func companyUser(g *echo.Group, db *gorm.DB, cache cache.Cache) {
 	service := services.NewCompanyUserService(repo)
 	handler := handlers.NewCompanyUserHandler(service, serviceUser, serviceProfile, serviceCompany)
 
-	g.Use(middleware.JWTAuth)
-
-	g.POST("/users", handler.CreateUser)
-	g.GET("/companyUsers/:uuid", handler.FindById)
-	g.POST("/companyUsers", handler.AddUserToCompany)
-	g.PUT("/companyUsers/:uuid", handler.UpdateCompanyUser)
-	g.DELETE("/companyUsers/:uuid", handler.DeleteCompanyUser)
+	group.POST("/users", handler.CreateUser)
+	group.GET("/:uuid", handler.FindById)
+	group.POST("", handler.AddUserToCompany)
+	group.PUT("/:uuid", handler.UpdateCompanyUser)
+	group.DELETE("/:uuid", handler.DeleteCompanyUser)
 }
 
+// Rutas de Roles
 func role(g *echo.Group, db *gorm.DB, cache cache.Cache) {
+	group := g.Group("/roles")
+
 	repo := repositories.NewRoleRepository(db, cache)
 	service := services.NewRoleService(repo)
 	handler := handlers.NewRoleHandler(service)
 
-	g.Use(middleware.JWTAuth)
-	g.POST("/roles", handler.CreateRole)
+	group.POST("", handler.CreateRole)
 }
 
+// Rutas de Permisos
 func permission(g *echo.Group, db *gorm.DB, cache cache.Cache) {
+	group := g.Group("/permissions")
+
 	repo := repositories.NewPermissionRepository(db, cache)
 	service := services.NewPermissionService(repo)
 	handler := handlers.NewPermissionHandler(service)
 
-	g.Use(middleware.JWTAuth)
-
-	g.POST("/permissions", handler.CreatePermission)
+	group.POST("", handler.CreatePermission)
 }
 
+// Rutas de Perfiles (Profiles)
 func profile(g *echo.Group, db *gorm.DB, cache cache.Cache) {
-	g = g.Group("/auth")
+	group := g.Group("/profiles")
 
 	repoUser := repositories.NewUserRepository(db, cache)
 	serviceUser := services.NewUserService(repoUser)
@@ -84,21 +94,24 @@ func profile(g *echo.Group, db *gorm.DB, cache cache.Cache) {
 	service := services.NewProfileService(repo)
 	handler := handlers.NewProfileHandler(service, serviceUser)
 
-	g.Use(middleware.JWTAuth)
-	g.POST("/profiles", handler.Create)
-	g.GET("/profiles", handler.MeProfile)
-	g.PUT("/profiles/:uuid", handler.Update)
+	group.POST("", handler.Create)
+	group.GET("", handler.MeProfile)
+	group.PUT("/:uuid", handler.Update)
 }
 
+// Rutas de Usuarios y Autenticación
 func user(g *echo.Group, db *gorm.DB, cache cache.Cache) {
+	auth := g.Group("/auth") // Rutas sin autenticación
+
 	repo := repositories.NewUserRepository(db, cache)
 	service := services.NewUserService(repo)
 	handler := handlers.NewUserHandler(service)
 
-	groupRoute := g.Group("/auth")
-	groupRoute.POST("/register", handler.Register)
-	groupRoute.POST("/login", handler.Login)
+	auth.POST("/register", handler.Register)
+	auth.POST("/login", handler.Login)
 
-	g.Use(middleware.JWTAuth)
-	g.POST("/resetPassword", handler.ResetPassword)
+	// Rutas protegidas para usuarios autenticados
+	protected := g.Group("/user")
+	protected.Use(middleware.JWTAuth)
+	protected.POST("/resetPassword", handler.ResetPassword)
 }
