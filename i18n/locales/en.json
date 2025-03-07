@@ -100,5 +100,8 @@
   },
   "InvalidOldPassword": {
     "other": "Old password invalid"
+  },
+  "ValidJWT": {
+    "other": "Valid JWT"
   }
 }

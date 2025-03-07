@@ -89,3 +89,7 @@ func (h *UserHandler) ResetPassword(c echo.Context) error {
 
 	return utils.SendSuccess(c, localesAuth.ResetPasswordSuccess, nil)
 }
+
+func (h *UserHandler) ValidateToken(c echo.Context) error {
+	return utils.SendSuccess(c, localesAuth.ValidJWT, nil)
+}

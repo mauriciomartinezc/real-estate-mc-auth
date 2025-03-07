@@ -103,5 +103,8 @@
   },
   "InvalidOldPassword": {
     "other": "Contraseña anterior no valida"
+  },
+  "ValidJWT": {
+    "other": "JWT Valido"
   }
 }

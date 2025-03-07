@@ -13,14 +13,15 @@ import (
 // SetupRoutes inicializa las rutas principales
 func SetupRoutes(e *echo.Echo, db *gorm.DB, cache cache.Cache) {
 	api := e.Group("/api")
-	api.Use(middleware.JWTAuth)
 
+	user(api, db, cache) // Usuario no requiere autenticación para registro/login
+
+	api.Use(middleware.JWTAuth)
 	company(api, db, cache)
 	companyUser(api, db, cache)
 	role(api, db, cache)
 	permission(api, db, cache)
 	profile(api, db, cache)
-	user(api, db, cache) // Usuario no requiere autenticación para registro/login
 }
 
 // Rutas de Empresas (Companies)
@@ -111,7 +112,8 @@ func user(g *echo.Group, db *gorm.DB, cache cache.Cache) {
 	auth.POST("/login", handler.Login)
 
 	// Rutas protegidas para usuarios autenticados
-	protected := g.Group("/user")
+	protected := g.Group("/auth")
 	protected.Use(middleware.JWTAuth)
 	protected.POST("/resetPassword", handler.ResetPassword)
+	protected.GET("/validate", handler.ValidateToken)
 }

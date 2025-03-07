@@ -15,4 +15,5 @@ const (
 	NotRequiredResetPassword       = "NotRequiredResetPassword"
 	ResetPasswordSuccess           = "ResetPasswordSuccess"
 	InvalidOldPassword             = "InvalidOldPassword"
+	ValidJWT                       = "ValidJWT"
 )
